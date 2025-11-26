@@ -1,1 +1,5 @@
-// Flows will be imported for their side effects in this file.
+import { config } from 'dotenv';
+config();
+
+import '@/ai/flows/natural-language-assignment-input.ts';
+import '@/ai/flows/intelligent-study-schedule-suggestions.ts';
