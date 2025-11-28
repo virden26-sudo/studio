@@ -18,6 +18,18 @@ export function DashboardPage() {
         </div>
         <div className="lg:col-span-1 flex flex-col gap-6">
           <GradeOverview />
+          <Card>
+            <CardHeader>
+              <CardTitle>Connect to University</CardTitle>
+              <CardDescription>Import your assignments automatically.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground mb-4">
+                Link your student account to sync your courses and due dates directly from your university's portal.
+              </p>
+              <Button className="w-full">Connect & Sync</Button>
+            </CardContent>
+          </Card>
            <Card>
             <CardHeader>
                 <CardTitle>Academic Support</CardTitle>
