@@ -37,7 +37,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -71,6 +71,10 @@ export function AppShell({ children, pageTitle }: { children: React.ReactNode, p
       setNamePromptOpen(false);
       setNameInput('');
     }
+  };
+
+  const handleSettingsClick = () => {
+    window.open("https://navigate.nu.edu/d2l/home/23776", "_blank");
   };
 
   const getInitials = (name: string) => {
@@ -131,11 +135,9 @@ export function AppShell({ children, pageTitle }: { children: React.ReactNode, p
         <SidebarFooter className="border-t p-2">
           <SidebarMenu>
               <SidebarMenuItem>
-                  <SidebarMenuButton asChild className="justify-start">
-                    <Link href="#">
+                  <SidebarMenuButton className="justify-start" onClick={handleSettingsClick}>
                       <Settings className="size-4 mr-2" />
                       Settings
-                    </Link>
                   </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
