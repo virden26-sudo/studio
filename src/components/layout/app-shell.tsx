@@ -95,6 +95,16 @@ export function AppShell({ children, pageTitle }: { children: React.ReactNode, p
     window.open("https://navigate.nu.edu/d2l/home/23776", "_blank");
   };
 
+  const MobileSidebarHeader = (
+    <SidebarHeader className="border-b">
+      <Link href="/" className="flex items-center gap-2 font-semibold">
+        <Logo className="h-6 w-6" />
+        <span className="font-headline">Agenda+</span>
+      </Link>
+      <SheetTitle className="sr-only">Menu</SheetTitle>
+    </SidebarHeader>
+  );
+
   const navItems = [
     { href: "/", icon: Home, label: "Dashboard" },
     { href: "#", icon: Book, label: "Assignments" },
@@ -104,10 +114,10 @@ export function AppShell({ children, pageTitle }: { children: React.ReactNode, p
 
   return (
     <SidebarProvider>
-      <Sidebar>
+      <Sidebar mobileSidebarHeader={MobileSidebarHeader}>
         <SidebarHeader className="border-b">
           <Link href="/" className="flex items-center gap-2 font-semibold">
-              <Logo className="h-6 w-6 text-primary" />
+              <Logo className="h-6 w-6" />
               <span className="font-headline">Agenda+</span>
           </Link>
         </SidebarHeader>
@@ -239,5 +249,3 @@ export function AppShell({ children, pageTitle }: { children: React.ReactNode, p
     </SidebarProvider>
   );
 }
-
-    
