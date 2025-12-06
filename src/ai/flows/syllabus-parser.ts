@@ -11,7 +11,7 @@
 import {ai} from '@/ai/genkit';
 import {googleAI} from '@genkit-ai/google-genai';
 import {z} from 'genkit';
-import { ParseAssignmentOutputSchema } from '@/ai/schemas';
+import { AssignmentSchema } from '@/ai/schemas/assignment';
 
 const ParseSyllabusInputSchema = z.object({
   syllabusFile: z
@@ -23,7 +23,7 @@ const ParseSyllabusInputSchema = z.object({
 export type ParseSyllabusInput = z.infer<typeof ParseSyllabusInputSchema>;
 
 const ParseSyllabusOutputSchema = z.object({
-    assignments: z.array(ParseAssignmentOutputSchema)
+    assignments: z.array(AssignmentSchema)
 });
 export type ParseSyllabusOutput = z.infer<typeof ParseSyllabusOutputSchema>;
 
@@ -44,7 +44,7 @@ const parseSyllabusPrompt = ai.definePrompt({
   - course: The course the assignment is for, if specified.
   - details: Any additional details about the assignment, if specified.
 
-  Carefully read the provided syllabus document and identify all assignments, quizzes, exams, discussions, and projects.
+  Carefully read the provided syllabus document and identify all assignments, quizzes, exams, discussions, and projects. Do not make any assumptions about the current year.
 
   Syllabus Document:
   {{media url=syllabusFile}}

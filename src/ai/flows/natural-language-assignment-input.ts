@@ -10,7 +10,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { ParseAssignmentOutputSchema } from '@/ai/schemas';
+import { AssignmentSchema } from '@/ai/schemas/assignment';
 
 const ParseAssignmentInputSchema = z.object({
   assignmentText: z
@@ -18,7 +18,7 @@ const ParseAssignmentInputSchema = z.object({
     .describe('A natural language description of an assignment.'),
 });
 export type ParseAssignmentInput = z.infer<typeof ParseAssignmentInputSchema>;
-export type ParseAssignmentOutput = z.infer<typeof ParseAssignmentOutputSchema>;
+export type ParseAssignmentOutput = z.infer<typeof AssignmentSchema>;
 
 
 export async function parseAssignment(input: ParseAssignmentInput): Promise<ParseAssignmentOutput> {
@@ -28,7 +28,7 @@ export async function parseAssignment(input: ParseAssignmentInput): Promise<Pars
 const parseAssignmentPrompt = ai.definePrompt({
   name: 'parseAssignmentPrompt',
   input: {schema: ParseAssignmentInputSchema},
-  output: {schema: ParseAssignmentOutputSchema},
+  output: {schema: AssignmentSchema},
   prompt: `You are an AI assistant that extracts structured information from a natural language assignment description.
 
   The output should be a JSON object with the following keys:
@@ -48,7 +48,7 @@ const parseAssignmentFlow = ai.defineFlow(
   {
     name: 'parseAssignmentFlow',
     inputSchema: ParseAssignmentInputSchema,
-    outputSchema: ParseAssignmentOutputSchema,
+    outputSchema: AssignmentSchema,
   },
   async input => {
     const {output} = await parseAssignmentPrompt(input);
