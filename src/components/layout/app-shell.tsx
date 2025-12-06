@@ -4,11 +4,10 @@ import * as React from "react";
 import {
   Book,
   Calendar,
-  Home,
+  Star,
   Bot,
   Plus,
   Settings,
-  Star,
   User as UserIcon,
   FileUp,
 } from "lucide-react";
@@ -68,14 +67,16 @@ export function AppShell({ children }: { children: React.ReactElement }) {
       const storedUser = localStorage.getItem("agendaUser");
       if (storedUser) {
         setUser(JSON.parse(storedUser));
-      } else {
+      } else if (user === null) {
         setNamePromptOpen(true);
       }
     } catch (e) {
       console.error("Failed to parse user from local storage", e);
-      setNamePromptOpen(true);
+      if (user === null) {
+        setNamePromptOpen(true);
+      }
     }
-  }, []);
+  }, [user]);
 
   const handleNameSave = () => {
     if (nameInput.trim()) {
@@ -100,10 +101,10 @@ export function AppShell({ children }: { children: React.ReactElement }) {
   };
 
   const MobileSidebarHeader = (
-    <SheetHeader className="border-b p-2">
+    <SheetHeader className="border-b p-4">
       <Link href="/" className="flex items-center gap-2 font-semibold">
         <Logo className="h-6 w-6" />
-        <span className="font-headline">Agenda+</span>
+        <span className="font-headline text-gradient">Agenda+</span>
       </Link>
     </SheetHeader>
   );
@@ -115,13 +116,14 @@ export function AppShell({ children }: { children: React.ReactElement }) {
   ];
 
   const pageTitles: { [key: string]: string } = {
+    '/': 'Welcome',
     '/assignments': 'Assignments',
     '/grades': 'Grades',
     '/calendar': 'Calendar',
   };
   
-  const pageTitle = pageTitles[pathname] || "Dashboard";
-  const showPageTitle = pathname !== '/';
+  const pageTitle = pageTitles[pathname] || "";
+  const showWelcomeHeader = pathname === '/';
 
   return (
     <SidebarProvider>
@@ -129,7 +131,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
         <SidebarHeader>
           <Link href="/" className="flex items-center gap-2 font-semibold p-2">
               <Logo className="h-6 w-6" />
-              <span className="font-headline group-data-[collapsible=icon]:hidden">Agenda+</span>
+              <span className="font-headline group-data-[collapsible=icon]:hidden text-gradient">Agenda+</span>
           </Link>
         </SidebarHeader>
         <SidebarContent className="p-2">
@@ -148,19 +150,6 @@ export function AppShell({ children }: { children: React.ReactElement }) {
               </SidebarMenuItem>
           </SidebarMenu>
           <SidebarMenu className="mt-4">
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname === '/'}
-                className="justify-start"
-                tooltip="Dashboard"
-              >
-                <Link href="/">
-                  <Home className="size-4 mr-2" />
-                  <span className="group-data-[collapsible=icon]:hidden">Dashboard</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
             {navItems.map((item) => (
               <SidebarMenuItem key={item.label}>
                 <SidebarMenuButton
@@ -223,11 +212,11 @@ export function AppShell({ children }: { children: React.ReactElement }) {
                      <div className="flex flex-col items-start group-data-[collapsible=icon]:hidden">
                         {user ? (
                             <>
-                                <span>{user.name}</span>
+                                <span className="text-gradient">{user.name}</span>
                                 <span className="text-xs text-muted-foreground">View Profile</span>
                             </>
                         ) : (
-                            <span>Set User</span>
+                            <span className="text-gradient">Set User</span>
                         )}
                     </div>
                 </SidebarMenuButton>
@@ -238,7 +227,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
       <SidebarInset>
         <header className="flex h-14 items-center gap-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 sticky top-0 z-30 lg:h-[60px] lg:px-6">
           <SidebarTrigger />
-          {showPageTitle && <h1 className="flex-1 text-lg font-semibold md:text-xl font-headline text-gradient">{pageTitle}</h1>}
+          {!showWelcomeHeader && <h1 className="flex-1 text-lg font-semibold md:text-xl font-headline text-gradient">{pageTitle}</h1>}
           <div className="flex-1" />
           <div className="flex items-center gap-2">
             <Button variant="outline" size="icon" className="md:hidden" onClick={() => setAddAssignmentOpen(true)}>

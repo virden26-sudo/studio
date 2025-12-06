@@ -7,6 +7,7 @@ import { CalendarView } from "./calendar-view";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { User } from "@/lib/types";
+import { useRouter } from "next/navigation";
 
 type DashboardPageProps = {
   user?: User | null;
@@ -14,12 +15,15 @@ type DashboardPageProps = {
 };
 
 export function DashboardPage({ user, setImportSyllabusOpen }: DashboardPageProps) {
-  const handleConnectClick = () => {
-    setImportSyllabusOpen?.(true);
-  };
+  
+  const router = useRouter();
 
   const handleAleksClick = () => {
     window.open("https://www.aleks.com/", "_blank");
+  };
+  
+  const handleLearningCenterClick = () => {
+    window.open("https://www.nu.edu/students/academic-success-center/", "_blank");
   };
 
   return (
@@ -28,7 +32,9 @@ export function DashboardPage({ user, setImportSyllabusOpen }: DashboardPageProp
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 flex flex-col gap-6">
           <UpcomingAssignments />
-          <CalendarView />
+          <div className="cursor-pointer" onClick={() => router.push('/calendar')}>
+            <CalendarView />
+          </div>
         </div>
         <div className="lg:col-span-1 flex flex-col gap-6">
           <GradeOverview />
@@ -41,7 +47,7 @@ export function DashboardPage({ user, setImportSyllabusOpen }: DashboardPageProp
               <p className="text-sm text-muted-foreground mb-4">
                 Link your student account to sync your courses and due dates directly from your university's portal.
               </p>
-              <Button className="w-full" onClick={handleConnectClick}>Connect & Sync</Button>
+              <Button className="w-full" onClick={() => setImportSyllabusOpen?.(true)}>Connect & Sync</Button>
             </CardContent>
           </Card>
           <Card>
@@ -61,7 +67,7 @@ export function DashboardPage({ user, setImportSyllabusOpen }: DashboardPageProp
             </CardHeader>
             <CardContent>
                 <p className="text-sm text-muted-foreground mb-4">Connect with your university's resources for academic support and tutoring.</p>
-                <Button className="w-full" variant="secondary">Visit Learning Center</Button>
+                <Button className="w-full" variant="secondary" onClick={handleLearningCenterClick}>Visit Learning Center</Button>
             </CardContent>
           </Card>
         </div>
