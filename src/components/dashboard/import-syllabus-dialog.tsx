@@ -12,13 +12,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { parseSyllabus } from "@/ai/flows/syllabus-parser";
-import { Bot, Loader2, Sparkles, Upload } from "lucide-react";
-import { Card } from "../ui/card";
-import { ScrollArea } from "../ui/scroll-area";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+import { Loader2, Sparkles, Upload } from "lucide-react";
 import { useAssignments } from "@/context/assignments-context";
-import type { ParsedAssignment } from "@/lib/types";
 
 type ImportSyllabusDialogProps = {
   open: boolean;
@@ -29,10 +24,8 @@ export function ImportSyllabusDialog({ open, onOpenChange }: ImportSyllabusDialo
   const { toast } = useToast();
   const { addMultipleAssignments } = useAssignments();
   const [isParsing, setIsParsing] = useState(false);
-  const [parsedAssignments, setParsedAssignments] = useState<ParsedAssignment[] | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState<string | null>(null);
-
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fileToDataUri = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -41,16 +34,29 @@ export function ImportSyllabusDialog({ open, onOpenChange }: ImportSyllabusDialo
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
-  }
+  };
 
   async function handleFileParse(file: File) {
     setIsParsing(true);
-    setParsedAssignments(null);
     setFileName(file.name);
     try {
       const dataUri = await fileToDataUri(file);
       const result = await parseSyllabus({ syllabusFile: dataUri });
-      setParsedAssignments(result.assignments);
+      
+      if (result.assignments && result.assignments.length > 0) {
+        addMultipleAssignments(result.assignments);
+        toast({
+          title: "Assignments Imported!",
+          description: `${result.assignments.length} items have been automatically added to your schedule.`,
+        });
+      } else {
+        toast({
+            variant: "default",
+            title: "No assignments found",
+            description: "The AI couldn't find any assignments in this file. You can try another file.",
+        });
+      }
+      handleClose();
     } catch (error) {
       console.error(error);
       toast({
@@ -58,8 +64,7 @@ export function ImportSyllabusDialog({ open, onOpenChange }: ImportSyllabusDialo
         title: "Error",
         description: "Could not parse syllabus. Please try again.",
       });
-    } finally {
-      setIsParsing(false);
+      setIsParsing(false); // Only stop parsing on error, otherwise handleClose does it.
     }
   }
 
@@ -69,36 +74,17 @@ export function ImportSyllabusDialog({ open, onOpenChange }: ImportSyllabusDialo
       handleFileParse(file);
     }
   };
-  
-  const handleSave = () => {
-    if (!parsedAssignments) return;
-    
-    addMultipleAssignments(parsedAssignments);
-
-    toast({
-        title: "Assignments Imported!",
-        description: `${parsedAssignments.length} assignments have been added to your schedule.`,
-    });
-    handleClose();
-  }
 
   const handleClose = () => {
-    setParsedAssignments(null);
+    setIsParsing(false);
     setFileName(null);
     if(fileInputRef.current) fileInputRef.current.value = "";
     onOpenChange(false);
   }
 
-  const handleAssignmentChange = (index: number, field: keyof ParsedAssignment, value: string) => {
-    if (!parsedAssignments) return;
-    const newAssignments = [...parsedAssignments];
-    newAssignments[index] = { ...newAssignments[index], [field]: value };
-    setParsedAssignments(newAssignments);
-  }
-
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-lg" onInteractOutside={(e) => {
+      <DialogContent className="sm:max-w-md" onInteractOutside={(e) => {
         if(isParsing) e.preventDefault();
       }}>
         <DialogHeader>
@@ -107,10 +93,17 @@ export function ImportSyllabusDialog({ open, onOpenChange }: ImportSyllabusDialo
             Import from Syllabus
           </DialogTitle>
           <DialogDescription>
-            Upload your syllabus file and let AI extract all your assignments.
+            Upload your syllabus and let AI automatically extract all your coursework.
           </DialogDescription>
         </DialogHeader>
-        {!parsedAssignments && !isParsing ? (
+        
+        {isParsing ? (
+           <div className="flex flex-col items-center justify-center h-48">
+              <Loader2 className="mr-2 h-8 w-8 animate-spin" />
+              <p className="mt-2 text-muted-foreground">AI is parsing "{fileName}"...</p>
+              <p className="text-sm text-muted-foreground">This may take a moment.</p>
+           </div>
+        ) : (
             <div className="pt-4">
               <div
                 className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50"
@@ -129,50 +122,10 @@ export function ImportSyllabusDialog({ open, onOpenChange }: ImportSyllabusDialo
                   type="file"
                   className="hidden"
                   onChange={handleFileChange}
+                  accept=".pdf,.doc,.docx,.txt"
                 />
               </div>
             </div>
-        ) : isParsing ? (
-           <div className="flex flex-col items-center justify-center h-48">
-              <Loader2 className="mr-2 h-8 w-8 animate-spin" />
-              <p className="mt-2 text-muted-foreground">AI is parsing "{fileName}"...</p>
-           </div>
-        ) : (
-          <div className="space-y-4 pt-4">
-            <h3 className="font-semibold">Extracted Assignments from <span className="text-primary">{fileName}</span></h3>
-            <ScrollArea className="h-72">
-              <div className="space-y-4 pr-6">
-                {parsedAssignments && parsedAssignments.map((assignment, index) => (
-                  <Card key={index} className="p-4">
-                      <div className="space-y-2">
-                          <Label htmlFor={`task-${index}`}>Task</Label>
-                          <Input id={`task-${index}`} value={assignment.task} onChange={(e) => handleAssignmentChange(index, 'task', e.target.value)} />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4 mt-2">
-                          <div className="space-y-2">
-                              <Label htmlFor={`course-${index}`}>Course</Label>
-                              <Input id={`course-${index}`} value={assignment.course} onChange={(e) => handleAssignmentChange(index, 'course', e.target.value)} />
-                          </div>
-                          <div className="space-y-2">
-                              <Label htmlFor={`dueDate-${index}`}>Due Date</Label>
-                              <Input id={`dueDate-${index}`} type="date" value={assignment.dueDate} onChange={(e) => handleAssignmentChange(index, 'dueDate', e.target.value)} />
-                          </div>
-                      </div>
-                  </Card>
-                ))}
-                 {parsedAssignments && parsedAssignments.length === 0 && (
-                    <div className="flex flex-col items-center justify-center text-center p-8 text-muted-foreground">
-                        <p className="font-semibold">No assignments found.</p>
-                        <p className="text-sm">The AI couldn't find any assignments in this file. You can try another file.</p>
-                    </div>
-                )}
-              </div>
-            </ScrollArea>
-             <DialogFooter>
-                <Button variant="ghost" onClick={() => { setParsedAssignments(null); setIsParsing(false); setFileName(null); }}>Back</Button>
-                {parsedAssignments && parsedAssignments.length > 0 && <Button onClick={handleSave}>Save {parsedAssignments.length} Assignments</Button>}
-              </DialogFooter>
-          </div>
         )}
       </DialogContent>
     </Dialog>
