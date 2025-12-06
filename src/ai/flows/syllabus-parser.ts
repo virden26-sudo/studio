@@ -40,7 +40,7 @@ const parseSyllabusPrompt = ai.definePrompt({
 
   The output should be a JSON object containing an 'assignments' array. Each object in the array should have the following keys:
   - task: The title or name of the task.
-  - dueDate: The due date of the assignment in ISO format (YYYY-MM-DD). Use the current year.
+  - dueDate: The due date of the assignment in ISO format (YYYY-MM-DD).
   - course: The course the assignment is for, if specified.
   - details: Any additional details about the assignment, if specified.
 
