@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { parseAssignment, ParseAssignmentOutput } from "@/ai/flows/natural-language-assignment-input";
 import { Bot, Loader2, Sparkles } from "lucide-react";
