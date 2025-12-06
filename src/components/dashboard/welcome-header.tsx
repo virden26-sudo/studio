@@ -4,9 +4,9 @@ import type { User } from "@/lib/types";
 import { useAssignments } from "@/context/assignments-context";
 
 export function WelcomeHeader({ user }: { user: User | null }) {
-  const { assignments } = useAssignments();
+  const { assignments, loading } = useAssignments();
   
-  const upcomingCount = assignments.filter(
+  const upcomingCount = loading ? 0 : assignments.filter(
     (a) => !a.completed && a.dueDate > new Date()
   ).length;
 
@@ -18,7 +18,7 @@ export function WelcomeHeader({ user }: { user: User | null }) {
         Welcome back, {name}!
       </h1>
       <p className="text-muted-foreground">
-        {upcomingCount > 0 
+        {loading ? 'Loading your agenda...' : upcomingCount > 0 
           ? `You have ${upcomingCount} upcoming assignment${upcomingCount > 1 ? 's' : ''}. Keep up the great work.`
           : `You have no upcoming assignments. Great job!`}
       </p>
