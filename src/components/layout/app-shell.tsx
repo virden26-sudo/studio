@@ -126,7 +126,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
   return (
     <SidebarProvider>
       <Sidebar mobileSidebarHeader={MobileSidebarHeader}>
-        <SidebarHeader className="border-b">
+        <SidebarHeader className="border-b md:hidden">
           <Link href="/" className="flex items-center gap-2 font-semibold">
               <Logo className="h-6 w-6" />
               <span className="font-headline">Agenda+</span>
