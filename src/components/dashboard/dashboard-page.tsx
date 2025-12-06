@@ -9,8 +9,12 @@ import { Button } from "@/components/ui/button";
 import type { User } from "@/lib/types";
 
 export function DashboardPage({ user }: { user: User | null }) {
+  const handleConnectClick = () => {
+    window.open("https://navigate.nu.edu/d2l/home/23776", "_blank");
+  };
+
   return (
-    <>
+    <div className="flex flex-col gap-6">
       <WelcomeHeader user={user} />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 flex flex-col gap-6">
@@ -28,7 +32,7 @@ export function DashboardPage({ user }: { user: User | null }) {
               <p className="text-sm text-muted-foreground mb-4">
                 Link your student account to sync your courses and due dates directly from your university's portal.
               </p>
-              <Button className="w-full">Connect & Sync</Button>
+              <Button className="w-full" onClick={handleConnectClick}>Connect & Sync</Button>
             </CardContent>
           </Card>
            <Card>
@@ -43,6 +47,6 @@ export function DashboardPage({ user }: { user: User | null }) {
           </Card>
         </div>
       </div>
-    </>
+    </div>
   );
 }
