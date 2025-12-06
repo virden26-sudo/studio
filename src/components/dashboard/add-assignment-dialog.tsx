@@ -25,7 +25,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { parseAssignment, ParseAssignmentOutput } from "@/ai/flows/natural-language-assignment-input";
+import { parseAssignment } from "@/ai/flows/natural-language-assignment-input";
+import { type Assignment as ParsedAssignment } from '@/ai/schemas/assignment';
 import { Bot, Loader2, Sparkles } from "lucide-react";
 import { useAssignments } from "@/context/assignments-context";
 
@@ -42,7 +43,7 @@ export function AddAssignmentDialog({ open, onOpenChange }: AddAssignmentDialogP
   const { toast } = useToast();
   const { addAssignment } = useAssignments();
   const [isParsing, setIsParsing] = useState(false);
-  const [parsedData, setParsedData] = useState<ParseAssignmentOutput | null>(null);
+  const [parsedData, setParsedData] = useState<ParsedAssignment | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
