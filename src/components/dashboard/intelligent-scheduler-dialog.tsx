@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { suggestStudySchedule } from "@/ai/flows/intelligent-study-schedule-suggestions";
 import { Loader2, Bot, Sparkles } from "lucide-react";
-import { mockSchedule } from "@/lib/mock-data";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../ui/card";
 import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
@@ -41,7 +40,6 @@ export function IntelligentSchedulerDialog({ open, onOpenChange }: IntelligentSc
     setSuggestion(null);
     try {
       const result = await suggestStudySchedule({
-        schedule: JSON.stringify(mockSchedule),
         assignments: JSON.stringify(assignments.filter(a => !a.completed)),
       });
       const parsedSchedule = JSON.parse(result.suggestedSchedule);
@@ -72,7 +70,7 @@ export function IntelligentSchedulerDialog({ open, onOpenChange }: IntelligentSc
             Intelligent Study Scheduler
           </DialogTitle>
           <DialogDescription>
-            Let AI analyze your schedule and assignments to create an optimal study plan for you.
+            Let AI analyze your assignments to create an optimal study plan for you.
           </DialogDescription>
         </DialogHeader>
         
@@ -80,19 +78,13 @@ export function IntelligentSchedulerDialog({ open, onOpenChange }: IntelligentSc
             <Card className="flex flex-col">
                 <CardHeader>
                     <CardTitle>Your Inputs</CardTitle>
-                    <CardDescription>AI will consider these items.</CardDescription>
+                    <CardDescription>AI will consider your upcoming assignments.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-1 min-h-0 space-y-4">
                     <div className="flex-1">
                         <h3 className="font-semibold mb-2 text-sm">Upcoming Assignments</h3>
-                        <ScrollArea className="h-40 rounded-md border p-2 text-sm">
+                        <ScrollArea className="h-80 rounded-md border p-2 text-sm">
                            {assignments.filter(a => !a.completed).map(a => <p key={a.id} className="truncate">{a.title}</p>)}
-                        </ScrollArea>
-                    </div>
-                     <div className="flex-1">
-                        <h3 className="font-semibold mb-2 text-sm">Your Schedule</h3>
-                        <ScrollArea className="h-40 rounded-md border p-2 text-sm">
-                           {mockSchedule.map(s => <p key={s.id} className="truncate">{s.title} ({s.startTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - {s.endTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})})</p>)}
                         </ScrollArea>
                     </div>
                 </CardContent>

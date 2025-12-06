@@ -13,11 +13,6 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const StudyScheduleInputSchema = z.object({
-  schedule: z
-    .string()
-    .describe(
-      'The student schedule as a JSON string. Should include day of the week, start time, and end time for each commitment (e.g., classes, work).'
-    ),
   assignments: z
     .string()
     .describe(
@@ -52,14 +47,11 @@ const prompt = ai.definePrompt({
   output: {schema: StudyScheduleOutputSchema},
   prompt: `You are an AI assistant that helps students create optimal study schedules.
 
-You will be provided with the student's schedule and a list of assignments with their due dates and difficulty.
+You will be provided with a list of assignments with their due dates and difficulty.
 
-Based on this information, you will suggest optimal study times for each assignment.
+Based on this information, you will suggest optimal study times for each assignment. Assume the student is generally free outside of 9am-5pm on weekdays, but can be flexible.
 Consider the difficulty of the assignment and the due date when making your suggestions. The earlier the due date and the harder the assignment, the earlier you should start working on it.
 Schedule in breaks of at least 10 minutes per hour.
-Take into account the student's existing schedule and avoid scheduling study times during those times.
-
-Student Schedule: {{{schedule}}}
 
 Assignments: {{{assignments}}}
 
