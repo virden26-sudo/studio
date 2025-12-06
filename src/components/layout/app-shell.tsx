@@ -56,7 +56,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ImportSyllabusDialog } from "../dashboard/import-syllabus-dialog";
 
-export function AppShell({ children, pageTitle }: { children: React.ReactElement, pageTitle: string }) {
+export function AppShell({ children }: { children: React.ReactElement }) {
   const pathname = usePathname();
   const [addAssignmentOpen, setAddAssignmentOpen] = React.useState(false);
   const [schedulerOpen, setSchedulerOpen] = React.useState(false);
@@ -112,6 +112,15 @@ export function AppShell({ children, pageTitle }: { children: React.ReactElement
     { href: "#", icon: Star, label: "Grades" },
     { href: "#", icon: Calendar, label: "Calendar" },
   ];
+
+  const pageTitles: { [key: string]: string } = {
+    '/': 'Dashboard',
+    '/assignments': 'Assignments',
+    '/grades': 'Grades',
+    '/calendar': 'Calendar',
+  };
+  
+  const pageTitle = pageTitles[pathname] || "Dashboard";
 
   return (
     <SidebarProvider>

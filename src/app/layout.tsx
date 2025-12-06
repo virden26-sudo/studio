@@ -30,7 +30,9 @@ export default function RootLayout({
       <body className="font-body antialiased">
         <Suspense>
           <AssignmentsProvider>
-            {children}
+            <AppShell>
+              {children}
+            </AppShell>
           </AssignmentsProvider>
         </Suspense>
         <Toaster />
