@@ -70,7 +70,7 @@ export function AssignmentsProvider({ children }: { children: ReactNode }) {
             title: a.task,
             course: a.course || 'Uncategorized',
             details: a.details,
-            dueDate,
+            dueDate: dueDate,
             completed: false,
             priority: getPriority(dueDate),
         }
