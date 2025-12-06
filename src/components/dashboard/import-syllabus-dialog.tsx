@@ -7,9 +7,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { parseSyllabus } from "@/ai/flows/syllabus-parser";
 import { Loader2, Sparkles, Upload } from "lucide-react";
@@ -56,7 +54,7 @@ export function ImportSyllabusDialog({ open, onOpenChange }: ImportSyllabusDialo
             description: "The AI couldn't find any assignments in this file. You can try another file.",
         });
       }
-      handleClose();
+      handleClose(false);
     } catch (error) {
       console.error(error);
       toast({
@@ -75,11 +73,13 @@ export function ImportSyllabusDialog({ open, onOpenChange }: ImportSyllabusDialo
     }
   };
 
-  const handleClose = () => {
-    setIsParsing(false);
-    setFileName(null);
-    if(fileInputRef.current) fileInputRef.current.value = "";
-    onOpenChange(false);
+  const handleClose = (isOpen: boolean) => {
+    if (!isOpen) {
+      setIsParsing(false);
+      setFileName(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+    onOpenChange(isOpen);
   }
 
   return (

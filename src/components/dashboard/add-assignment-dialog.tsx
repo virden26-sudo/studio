@@ -81,13 +81,15 @@ export function AddAssignmentDialog({ open, onOpenChange }: AddAssignmentDialogP
         title: "Assignment Added!",
         description: `"${parsedData?.task}" has been added to your schedule.`,
     });
-    handleClose();
+    handleClose(false);
   }
 
-  const handleClose = () => {
-    form.reset();
-    setParsedData(null);
-    onOpenChange(false);
+  const handleClose = (isOpen: boolean) => {
+    if (!isOpen) {
+      form.reset();
+      setParsedData(null);
+    }
+    onOpenChange(isOpen);
   }
 
   return (

@@ -57,10 +57,10 @@ export function IntelligentSchedulerDialog({ open, onOpenChange }: IntelligentSc
       setIsLoading(false);
     }
   }
-  
-  const handleClose = () => {
+
+  const handleClose = (isOpen: boolean) => {
     // Do not clear suggestion on close, so user can see it again.
-    onOpenChange(false);
+    onOpenChange(isOpen);
   }
 
   return (

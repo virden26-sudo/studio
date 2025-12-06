@@ -126,10 +126,10 @@ export function AppShell({ children }: { children: React.ReactElement }) {
   return (
     <SidebarProvider>
       <Sidebar mobileSidebarHeader={MobileSidebarHeader}>
-        <SidebarHeader className="border-b md:hidden">
-          <Link href="/" className="flex items-center gap-2 font-semibold">
+        <SidebarHeader>
+          <Link href="/" className="flex items-center gap-2 font-semibold p-2">
               <Logo className="h-6 w-6" />
-              <span className="font-headline">Agenda+</span>
+              <span className="font-headline group-data-[collapsible=icon]:hidden">Agenda+</span>
           </Link>
         </SidebarHeader>
         <SidebarContent className="p-2">
@@ -137,13 +137,13 @@ export function AppShell({ children }: { children: React.ReactElement }) {
               <SidebarMenuItem>
                   <Button variant="default" className="w-full justify-start h-10" onClick={() => setAddAssignmentOpen(true)}>
                       <Plus className="mr-2 size-4" />
-                      Add Assignment
+                      <span className="group-data-[collapsible=icon]:hidden">Add Assignment</span>
                   </Button>
               </SidebarMenuItem>
               <SidebarMenuItem>
                   <Button variant="secondary" className="w-full justify-start h-10" onClick={() => setImportSyllabusOpen(true)}>
                       <FileUp className="mr-2 size-4" />
-                      Import Syllabus
+                      <span className="group-data-[collapsible=icon]:hidden">Import Syllabus</span>
                   </Button>
               </SidebarMenuItem>
           </SidebarMenu>
@@ -153,10 +153,11 @@ export function AppShell({ children }: { children: React.ReactElement }) {
                 asChild
                 isActive={pathname === '/'}
                 className="justify-start"
+                tooltip="Dashboard"
               >
                 <Link href="/">
                   <Home className="size-4 mr-2" />
-                  Dashboard
+                  <span className="group-data-[collapsible=icon]:hidden">Dashboard</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -166,10 +167,11 @@ export function AppShell({ children }: { children: React.ReactElement }) {
                   asChild
                   isActive={pathname === item.href}
                   className="justify-start"
+                  tooltip={item.label}
                 >
                   <Link href={item.href}>
                     <item.icon className="size-4 mr-2" />
-                    {item.label}
+                    <span className="group-data-[collapsible=icon]:hidden">{item.label}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -178,9 +180,10 @@ export function AppShell({ children }: { children: React.ReactElement }) {
                 <SidebarMenuButton
                     onClick={() => setSchedulerOpen(true)}
                     className="justify-start"
+                    tooltip="AI Scheduler"
                   >
                     <Bot className="size-4 mr-2" />
-                    AI Scheduler
+                    <span className="group-data-[collapsible=icon]:hidden">AI Scheduler</span>
                   </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -190,9 +193,9 @@ export function AppShell({ children }: { children: React.ReactElement }) {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuItem>
-                    <SidebarMenuButton className="justify-start">
+                    <SidebarMenuButton className="justify-start" tooltip="Settings">
                         <Settings className="size-4 mr-2" />
-                        Settings
+                        <span className="group-data-[collapsible=icon]:hidden">Settings</span>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
               </DropdownMenuTrigger>
@@ -217,14 +220,16 @@ export function AppShell({ children }: { children: React.ReactElement }) {
                       {user?.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.name} data-ai-hint="person portrait" />}
                       <AvatarFallback>{user ? getInitials(user.name) : <UserIcon/>}</AvatarFallback>
                     </Avatar>
-                    {user ? (
-                      <div className="flex flex-col items-start">
-                        <span>{user.name}</span>
-                        <span className="text-xs text-muted-foreground">View Profile</span>
-                      </div>
-                    ) : (
-                      <span>Set User</span>
-                    )}
+                     <div className="flex flex-col items-start group-data-[collapsible=icon]:hidden">
+                        {user ? (
+                            <>
+                                <span>{user.name}</span>
+                                <span className="text-xs text-muted-foreground">View Profile</span>
+                            </>
+                        ) : (
+                            <span>Set User</span>
+                        )}
+                    </div>
                 </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -249,8 +254,12 @@ export function AppShell({ children }: { children: React.ReactElement }) {
       <AddAssignmentDialog open={addAssignmentOpen} onOpenChange={setAddAssignmentOpen} />
       <IntelligentSchedulerDialog open={schedulerOpen} onOpenChange={setSchedulerOpen} />
       <ImportSyllabusDialog open={importSyllabusOpen} onOpenChange={setImportSyllabusOpen} />
-      <Dialog open={namePromptOpen} onOpenChange={nameInput ? setAddAssignmentOpen : () => {}}>
-        <DialogContent onInteractOutside={(e) => e.preventDefault()}>
+      <Dialog open={namePromptOpen} onOpenChange={(isOpen) => {
+        if (user) {
+          setNamePromptOpen(isOpen);
+        }
+      }}>
+        <DialogContent onInteractOutside={(e) => {if (!user) e.preventDefault()}}>
             <DialogHeader>
                 <DialogTitle>Welcome to Agenda+</DialogTitle>
                 <DialogDescription>Please enter your name to personalize your experience.</DialogDescription>
@@ -266,7 +275,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
                 />
             </div>
             <DialogFooter>
-                <Button onClick={handleNameSave}>Save</Button>
+                <Button onClick={handleNameSave} disabled={!nameInput.trim()}>Save</Button>
             </DialogFooter>
         </DialogContent>
       </Dialog>
