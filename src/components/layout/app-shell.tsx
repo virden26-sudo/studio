@@ -121,6 +121,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
   };
   
   const pageTitle = pageTitles[pathname] || "Dashboard";
+  const showPageTitle = pathname !== '/';
 
   return (
     <SidebarProvider>
@@ -220,7 +221,8 @@ export function AppShell({ children }: { children: React.ReactElement }) {
       <SidebarInset>
         <header className="flex h-14 items-center gap-4 border-b bg-background px-4 sticky top-0 z-30 lg:h-[60px] lg:px-6">
           <SidebarTrigger />
-          <h1 className="flex-1 text-lg font-semibold md:text-xl font-headline">{pageTitle}</h1>
+          {showPageTitle && <h1 className="flex-1 text-lg font-semibold md:text-xl font-headline">{pageTitle}</h1>}
+          <div className="flex-1" />
           <div className="flex items-center gap-2">
             <Button variant="outline" size="icon" className="md:hidden" onClick={() => setAddAssignmentOpen(true)}>
               <Plus className="size-4" />
