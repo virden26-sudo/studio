@@ -5,7 +5,7 @@
  *
  * - parseAssignment - A function that parses a natural language assignment description.
  * - ParseAssignmentInput - The input type for the parseAssignment function.
- * - ParseAssignmentOutput - The return type for the parseAssignment function.
+ * - Assignment - The return type for the parseAssignment function.
  */
 
 import {ai} from '@/ai/genkit';
@@ -18,10 +18,9 @@ const ParseAssignmentInputSchema = z.object({
     .describe('A natural language description of an assignment.'),
 });
 export type ParseAssignmentInput = z.infer<typeof ParseAssignmentInputSchema>;
-export type ParseAssignmentOutput = Assignment;
 
 
-export async function parseAssignment(input: ParseAssignmentInput): Promise<ParseAssignmentOutput> {
+export async function parseAssignment(input: ParseAssignmentInput): Promise<Assignment> {
   return parseAssignmentFlow(input);
 }
 
