@@ -9,6 +9,7 @@ import {
   Plus,
   Settings,
   Star,
+  User as UserIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -27,15 +28,54 @@ import {
   SidebarInset,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { mockUser } from "@/lib/mock-data";
 import { Logo } from "@/components/icons";
 import { AddAssignmentDialog } from "../dashboard/add-assignment-dialog";
 import { IntelligentSchedulerDialog } from "../dashboard/intelligent-scheduler-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import type { User } from "@/lib/types";
 
 export function AppShell({ children, pageTitle }: { children: React.ReactNode, pageTitle: string }) {
   const pathname = usePathname();
   const [addAssignmentOpen, setAddAssignmentOpen] = React.useState(false);
   const [schedulerOpen, setSchedulerOpen] = React.useState(false);
+  const [user, setUser] = React.useState<User | null>(null);
+  const [namePromptOpen, setNamePromptOpen] = React.useState(false);
+  const [nameInput, setNameInput] = React.useState('');
+
+  React.useEffect(() => {
+    const storedUser = localStorage.getItem("agendaUser");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    } else {
+      setNamePromptOpen(true);
+    }
+  }, []);
+
+  const handleNameSave = () => {
+    if (nameInput.trim()) {
+      const newUser: User = {
+        name: nameInput.trim(),
+        avatarUrl: `https://picsum.photos/seed/${nameInput.trim()}/100/100`,
+      };
+      localStorage.setItem("agendaUser", JSON.stringify(newUser));
+      setUser(newUser);
+      setNamePromptOpen(false);
+      setNameInput('');
+    }
+  };
+
+  const getInitials = (name: string) => {
+    return name.split(" ").map(n => n[0]).join("");
+  }
 
   const navItems = [
     { href: "/", icon: Home, label: "Dashboard" },
@@ -99,12 +139,19 @@ export function AppShell({ children, pageTitle }: { children: React.ReactNode, p
                   </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                  <SidebarMenuButton className="h-auto justify-start">
-                      <Avatar className="size-8 mr-2"><AvatarImage src={mockUser.avatarUrl} alt={mockUser.name} data-ai-hint="person portrait" /><AvatarFallback>{mockUser.name.split(" ").map(n=>n[0]).join("")}</AvatarFallback></Avatar>
-                      <div className="flex flex-col items-start">
-                        <span>{mockUser.name}</span>
-                        <span className="text-xs text-muted-foreground">View Profile</span>
-                      </div>
+                  <SidebarMenuButton className="h-auto justify-start" onClick={() => setNamePromptOpen(true)}>
+                      <Avatar className="size-8 mr-2">
+                        {user?.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.name} data-ai-hint="person portrait" />}
+                        <AvatarFallback>{user ? getInitials(user.name) : <UserIcon/>}</AvatarFallback>
+                      </Avatar>
+                      {user ? (
+                        <div className="flex flex-col items-start">
+                          <span>{user.name}</span>
+                          <span className="text-xs text-muted-foreground">View Profile</span>
+                        </div>
+                      ) : (
+                        <span>Set User</span>
+                      )}
                   </SidebarMenuButton>
               </SidebarMenuItem>
           </SidebarMenu>
@@ -122,11 +169,32 @@ export function AppShell({ children, pageTitle }: { children: React.ReactNode, p
           </div>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          {children}
+          {React.cloneElement(children as React.ReactElement, { user })}
         </main>
       </SidebarInset>
       <AddAssignmentDialog open={addAssignmentOpen} onOpenChange={setAddAssignmentOpen} />
       <IntelligentSchedulerDialog open={schedulerOpen} onOpenChange={setSchedulerOpen} />
+      <Dialog open={namePromptOpen} onOpenChange={nameInput ? setAddAssignmentOpen : () => {}}>
+        <DialogContent onInteractOutside={(e) => e.preventDefault()}>
+            <DialogHeader>
+                <DialogTitle>Welcome to Agenda+</DialogTitle>
+                <DialogDescription>Please enter your name to personalize your experience.</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-2 py-4">
+                <Label htmlFor="name">Name</Label>
+                <Input 
+                    id="name" 
+                    placeholder="e.g. Alex Doe"
+                    value={nameInput}
+                    onChange={(e) => setNameInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleNameSave()}
+                />
+            </div>
+            <DialogFooter>
+                <Button onClick={handleNameSave}>Save</Button>
+            </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </SidebarProvider>
   );
 }

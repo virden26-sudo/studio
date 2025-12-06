@@ -6,11 +6,12 @@ import { GradeOverview } from "./grade-overview";
 import { CalendarView } from "./calendar-view";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import type { User } from "@/lib/types";
 
-export function DashboardPage() {
+export function DashboardPage({ user }: { user: User | null }) {
   return (
     <>
-      <WelcomeHeader />
+      <WelcomeHeader user={user} />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 flex flex-col gap-6">
           <UpcomingAssignments />

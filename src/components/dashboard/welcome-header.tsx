@@ -1,15 +1,17 @@
-import { mockUser } from "@/lib/mock-data";
 import { mockAssignments } from "@/lib/mock-data";
+import type { User } from "@/lib/types";
 
-export function WelcomeHeader() {
+export function WelcomeHeader({ user }: { user: User | null }) {
   const upcomingCount = mockAssignments.filter(
     (a) => !a.completed && a.dueDate > new Date()
   ).length;
+
+  const name = user ? user.name.split(" ")[0] : "there";
   
   return (
     <div>
       <h1 className="text-3xl font-bold tracking-tight font-headline">
-        Welcome back, {mockUser.name.split(" ")[0]}!
+        Welcome back, {name}!
       </h1>
       <p className="text-muted-foreground">
         {upcomingCount > 0 

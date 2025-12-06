@@ -1,12 +1,4 @@
-import type { Assignment, Course, ScheduleEvent, User } from './types';
-import { PlaceHolderImages } from './placeholder-images';
-
-const userAvatar = PlaceHolderImages.find(img => img.id === 'user-avatar-1');
-
-export const mockUser: User = {
-  name: 'Alex Doe',
-  avatarUrl: userAvatar?.imageUrl || `https://picsum.photos/seed/1/100/100`,
-};
+import type { Assignment, Course, ScheduleEvent } from './types';
 
 export const mockAssignments: Assignment[] = [
   {
