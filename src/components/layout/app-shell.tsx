@@ -61,22 +61,23 @@ export function AppShell({ children }: { children: React.ReactElement }) {
   const [user, setUser] = React.useState<User | null>(null);
   const [namePromptOpen, setNamePromptOpen] = React.useState(false);
   const [nameInput, setNameInput] = React.useState('');
+  const [isUserLoaded, setIsUserLoaded] = React.useState(false);
 
   React.useEffect(() => {
     try {
       const storedUser = localStorage.getItem("agendaUser");
       if (storedUser) {
         setUser(JSON.parse(storedUser));
-      } else if (user === null) {
+      } else {
         setNamePromptOpen(true);
       }
     } catch (e) {
       console.error("Failed to parse user from local storage", e);
-      if (user === null) {
-        setNamePromptOpen(true);
-      }
+      setNamePromptOpen(true);
+    } finally {
+      setIsUserLoaded(true);
     }
-  }, [user]);
+  }, []);
 
   const handleNameSave = () => {
     if (nameInput.trim()) {
@@ -230,14 +231,14 @@ export function AppShell({ children }: { children: React.ReactElement }) {
           {!showWelcomeHeader && <h1 className="flex-1 text-lg font-semibold md:text-xl font-headline text-gradient">{pageTitle}</h1>}
           <div className="flex-1" />
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon" className="md:hidden" onClick={() => setAddAssignmentOpen(true)}>
+            <Button variant="outline" size="icon" className="md-hidden" onClick={() => setAddAssignmentOpen(true)}>
               <Plus className="size-4" />
               <span className="sr-only">Add Assignment</span>
             </Button>
           </div>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          {React.cloneElement(children, { user, setImportSyllabusOpen })}
+          {isUserLoaded ? React.cloneElement(children, { user, setImportSyllabusOpen }) : <div>Loading...</div>}
         </main>
       </SidebarInset>
       <AddAssignmentDialog open={addAssignmentOpen} onOpenChange={setAddAssignmentOpen} />
