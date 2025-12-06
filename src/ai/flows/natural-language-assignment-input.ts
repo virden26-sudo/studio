@@ -10,7 +10,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { AssignmentSchema } from '@/ai/schemas/assignment';
+import { AssignmentSchema, type Assignment } from '@/ai/schemas/assignment';
 
 const ParseAssignmentInputSchema = z.object({
   assignmentText: z
@@ -18,7 +18,7 @@ const ParseAssignmentInputSchema = z.object({
     .describe('A natural language description of an assignment.'),
 });
 export type ParseAssignmentInput = z.infer<typeof ParseAssignmentInputSchema>;
-export type ParseAssignmentOutput = z.infer<typeof AssignmentSchema>;
+export type ParseAssignmentOutput = Assignment;
 
 
 export async function parseAssignment(input: ParseAssignmentInput): Promise<ParseAssignmentOutput> {
@@ -37,6 +37,8 @@ const parseAssignmentPrompt = ai.definePrompt({
   - course: The course the assignment is for, if specified.
   - details: Any additional details about the assignment, if specified.
 
+  Today's date is {{currentDate}}.
+
   Example Input: "Write essay for history class due next Friday"
   Example Output: { "task": "Write essay", "dueDate": "2024-07-26", "course": "history class" }
 
@@ -51,7 +53,10 @@ const parseAssignmentFlow = ai.defineFlow(
     outputSchema: AssignmentSchema,
   },
   async input => {
-    const {output} = await parseAssignmentPrompt(input);
+    const {output} = await parseAssignmentPrompt({
+        ...input,
+        currentDate: new Date().toLocaleDateString('en-CA'),
+    });
     return output!;
   }
 );
