@@ -33,7 +33,7 @@ const parseAssignmentPrompt = ai.definePrompt({
 
   The output should be a JSON object with the following keys:
   - task: The title or name of the task.
-  - dueDate: The due date of the assignment in ISO format (YYYY-MM-DD).
+  - dueDate: The due date of the assignment in ISO format (YYYY-MM-DD). If no year is specified, assume the current year.
   - course: The course the assignment is for, if specified.
   - details: Any additional details about the assignment, if specified.
 
