@@ -48,7 +48,6 @@ export function ImportSyllabusDialog({ open, onOpenChange }: ImportSyllabusDialo
           title: "Assignments Imported!",
           description: `${result.assignments.length} items have been automatically added to your schedule.`,
         });
-        window.location.reload();
       } else {
         toast({
             variant: "default",
