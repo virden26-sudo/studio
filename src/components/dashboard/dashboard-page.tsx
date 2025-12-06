@@ -13,6 +13,10 @@ export function DashboardPage({ user }: { user: User | null }) {
     window.open("https://navigate.nu.edu/d2l/home/23776", "_blank");
   };
 
+  const handleAleksClick = () => {
+    window.open("https://www.aleks.com/", "_blank");
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <WelcomeHeader user={user} />
@@ -33,6 +37,16 @@ export function DashboardPage({ user }: { user: User | null }) {
                 Link your student account to sync your courses and due dates directly from your university's portal.
               </p>
               <Button className="w-full" onClick={handleConnectClick}>Connect & Sync</Button>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+                <CardTitle>Connect to ALEKS</CardTitle>
+                <CardDescription>Access your math and chemistry assignments.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">Go to the ALEKS website to complete your interactive assignments.</p>
+                <Button className="w-full" onClick={handleAleksClick}>Go to ALEKS</Button>
             </CardContent>
           </Card>
            <Card>
