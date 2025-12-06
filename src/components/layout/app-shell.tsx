@@ -104,7 +104,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
     <SheetHeader className="border-b p-2">
       <Link href="/" className="flex items-center gap-2 font-semibold">
         <Logo className="h-6 w-6" />
-        <SheetTitle>Agenda+</SheetTitle>
+        <span className="font-headline">Agenda+</span>
       </Link>
     </SheetHeader>
   );
@@ -283,3 +283,5 @@ export function AppShell({ children }: { children: React.ReactElement }) {
     </SidebarProvider>
   );
 }
+
+    
