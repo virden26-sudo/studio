@@ -5,6 +5,7 @@ export type Assignment = {
   dueDate: Date;
   completed: boolean;
   priority: 'low' | 'medium' | 'high';
+  details?: string;
 };
 
 export type Course = {
@@ -25,3 +26,11 @@ export type User = {
   name: string;
   avatarUrl: string;
 };
+
+// This is what the AI flow returns. The dueDate is a string.
+export type ParsedAssignment = {
+  task: string;
+  dueDate: string; // ISO format
+  course?: string;
+  details?: string;
+}

@@ -1,6 +1,11 @@
 import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
+import { AssignmentsProvider } from '@/context/assignments-context';
+import { Suspense } from 'react';
+import { AppShell } from '@/components/layout/app-shell';
+import type { User } from '@/lib/types';
+import { DashboardPage } from '@/components/dashboard/dashboard-page';
 
 export const metadata: Metadata = {
   title: 'Agenda+',
@@ -23,7 +28,11 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
-        {children}
+        <Suspense>
+          <AssignmentsProvider>
+            {children}
+          </AssignmentsProvider>
+        </Suspense>
         <Toaster />
       </body>
     </html>

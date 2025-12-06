@@ -7,17 +7,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { mockAssignments } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import { format, isSameDay, addDays, startOfWeek, isToday } from 'date-fns';
 import { useState, useEffect } from "react";
+import { useAssignments } from "@/context/assignments-context";
+import type { Assignment } from "@/lib/types";
 
 type AssignmentsByDay = {
     day: Date;
-    assignments: typeof mockAssignments;
+    assignments: Assignment[];
 };
 
 export function CalendarView() {
+    const { assignments, loading } = useAssignments();
     const [assignmentsByDay, setAssignmentsByDay] = useState<AssignmentsByDay[]>([]);
     const [weekDays, setWeekDays] = useState<Date[]>([]);
 
@@ -26,12 +28,14 @@ export function CalendarView() {
         const days = Array.from({ length: 7 }).map((_, i) => addDays(weekStart, i));
         setWeekDays(days);
 
-        const assignments = days.map(day => ({
-            day,
-            assignments: mockAssignments.filter(a => isSameDay(a.dueDate, day) && !a.completed)
-        }));
-        setAssignmentsByDay(assignments);
-    }, []);
+        if (!loading) {
+            const dailyAssignments = days.map(day => ({
+                day,
+                assignments: assignments.filter(a => isSameDay(a.dueDate, day) && !a.completed)
+            }));
+            setAssignmentsByDay(dailyAssignments);
+        }
+    }, [assignments, loading]);
 
 
     return (
@@ -44,7 +48,7 @@ export function CalendarView() {
             </CardHeader>
             <CardContent>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
-                    {weekDays.length > 0 ? assignmentsByDay.map(({ day, assignments }) => (
+                    {weekDays.length > 0 && !loading ? assignmentsByDay.map(({ day, assignments }) => (
                         <div key={day.toString()} className={cn("rounded-lg p-2 min-h-32", isToday(day) ? "bg-primary/10 border-2 border-primary/50" : "bg-muted/50")}>
                             <div className="text-center">
                                 <p className={cn("font-semibold text-sm", isToday(day) ? "text-primary" : "text-muted-foreground")}>{format(day, 'EEE')}</p>
@@ -61,7 +65,7 @@ export function CalendarView() {
                         </div>
                     )) : (
                         Array.from({length: 7}).map((_, i) => (
-                             <div key={i} className="rounded-lg p-2 min-h-32 bg-muted/50" />
+                             <div key={i} className="rounded-lg p-2 min-h-32 bg-muted/50 animate-pulse" />
                         ))
                     )}
                 </div>

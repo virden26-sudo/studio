@@ -12,10 +12,11 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { suggestStudySchedule } from "@/ai/flows/intelligent-study-schedule-suggestions";
 import { Loader2, Bot, Sparkles } from "lucide-react";
-import { mockAssignments, mockSchedule } from "@/lib/mock-data";
+import { mockSchedule } from "@/lib/mock-data";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../ui/card";
 import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
+import { useAssignments } from "@/context/assignments-context";
 
 type IntelligentSchedulerDialogProps = {
   open: boolean;
@@ -31,6 +32,7 @@ type SuggestedScheduleItem = {
 
 export function IntelligentSchedulerDialog({ open, onOpenChange }: IntelligentSchedulerDialogProps) {
   const { toast } = useToast();
+  const { assignments } = useAssignments();
   const [isLoading, setIsLoading] = useState(false);
   const [suggestion, setSuggestion] = useState<{ suggestedSchedule: SuggestedScheduleItem[], reasoning: string } | null>(null);
 
@@ -40,7 +42,7 @@ export function IntelligentSchedulerDialog({ open, onOpenChange }: IntelligentSc
     try {
       const result = await suggestStudySchedule({
         schedule: JSON.stringify(mockSchedule),
-        assignments: JSON.stringify(mockAssignments.filter(a => !a.completed)),
+        assignments: JSON.stringify(assignments.filter(a => !a.completed)),
       });
       const parsedSchedule = JSON.parse(result.suggestedSchedule);
       setSuggestion({suggestedSchedule: parsedSchedule, reasoning: result.reasoning});
@@ -84,7 +86,7 @@ export function IntelligentSchedulerDialog({ open, onOpenChange }: IntelligentSc
                     <div className="flex-1">
                         <h3 className="font-semibold mb-2 text-sm">Upcoming Assignments</h3>
                         <ScrollArea className="h-40 rounded-md border p-2 text-sm">
-                           {mockAssignments.filter(a => !a.completed).map(a => <p key={a.id} className="truncate">{a.title}</p>)}
+                           {assignments.filter(a => !a.completed).map(a => <p key={a.id} className="truncate">{a.title}</p>)}
                         </ScrollArea>
                     </div>
                      <div className="flex-1">

@@ -27,6 +27,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { parseAssignment, ParseAssignmentOutput } from "@/ai/flows/natural-language-assignment-input";
 import { Bot, Loader2, Sparkles } from "lucide-react";
+import { useAssignments } from "@/context/assignments-context";
 
 const formSchema = z.object({
   naturalInput: z.string().min(1, "Please describe your assignment."),
@@ -39,6 +40,7 @@ type AddAssignmentDialogProps = {
 
 export function AddAssignmentDialog({ open, onOpenChange }: AddAssignmentDialogProps) {
   const { toast } = useToast();
+  const { addAssignment } = useAssignments();
   const [isParsing, setIsParsing] = useState(false);
   const [parsedData, setParsedData] = useState<ParseAssignmentOutput | null>(null);
 
@@ -66,7 +68,15 @@ export function AddAssignmentDialog({ open, onOpenChange }: AddAssignmentDialogP
   }
   
   const handleSave = () => {
-    // Here you would typically save the parsedData to your state management/database
+    if (!parsedData) return;
+    
+    addAssignment({
+        title: parsedData.task,
+        course: parsedData.course || 'Uncategorized',
+        dueDate: parsedData.dueDate,
+        details: parsedData.details,
+    });
+
     toast({
         title: "Assignment Added!",
         description: `"${parsedData?.task}" has been added to your schedule.`,
@@ -130,19 +140,19 @@ export function AddAssignmentDialog({ open, onOpenChange }: AddAssignmentDialogP
           <div className="space-y-4 pt-4">
             <div className="space-y-2">
                 <Label htmlFor="task">Task</Label>
-                <Input id="task" defaultValue={parsedData.task} placeholder="Task" />
+                <Input id="task" defaultValue={parsedData.task} onChange={(e) => setParsedData({...parsedData, task: e.target.value})} placeholder="Task" />
             </div>
              <div className="space-y-2">
                 <Label htmlFor="course">Course</Label>
-                <Input id="course" defaultValue={parsedData.course} placeholder="Course" />
+                <Input id="course" defaultValue={parsedData.course} onChange={(e) => setParsedData({...parsedData, course: e.target.value})} placeholder="Course" />
             </div>
              <div className="space-y-2">
                 <Label htmlFor="dueDate">Due Date</Label>
-                <Input id="dueDate" type="date" defaultValue={parsedData.dueDate} placeholder="Due Date" />
+                <Input id="dueDate" type="date" defaultValue={parsedData.dueDate} onChange={(e) => setParsedData({...parsedData, dueDate: e.target.value})} placeholder="Due Date" />
             </div>
              <div className="space-y-2">
                 <Label htmlFor="details">Details</Label>
-                <Textarea id="details" defaultValue={parsedData.details} placeholder="Details" />
+                <Textarea id="details" defaultValue={parsedData.details} onChange={(e) => setParsedData({...parsedData, details: e.target.value})} placeholder="Details" />
             </div>
              <DialogFooter>
                 <Button variant="ghost" onClick={() => { setParsedData(null); setIsParsing(false); }}>Back</Button>

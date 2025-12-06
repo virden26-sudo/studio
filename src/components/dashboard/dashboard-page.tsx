@@ -8,7 +8,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import type { User } from "@/lib/types";
 
-export function DashboardPage({ user }: { user: User | null }) {
+export function DashboardPage({ user }: { user?: User | null }) {
   const handleConnectClick = () => {
     window.open("https://navigate.nu.edu/d2l/home/23776", "_blank");
   };

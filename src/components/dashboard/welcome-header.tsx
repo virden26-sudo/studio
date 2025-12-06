@@ -1,8 +1,12 @@
-import { mockAssignments } from "@/lib/mock-data";
+"use client";
+
 import type { User } from "@/lib/types";
+import { useAssignments } from "@/context/assignments-context";
 
 export function WelcomeHeader({ user }: { user: User | null }) {
-  const upcomingCount = mockAssignments.filter(
+  const { assignments } = useAssignments();
+  
+  const upcomingCount = assignments.filter(
     (a) => !a.completed && a.dueDate > new Date()
   ).length;
 

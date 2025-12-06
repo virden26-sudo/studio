@@ -56,7 +56,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ImportSyllabusDialog } from "../dashboard/import-syllabus-dialog";
 
-export function AppShell({ children, pageTitle }: { children: React.ReactNode, pageTitle: string }) {
+export function AppShell({ children, pageTitle }: { children: React.ReactElement, pageTitle: string }) {
   const pathname = usePathname();
   const [addAssignmentOpen, setAddAssignmentOpen] = React.useState(false);
   const [schedulerOpen, setSchedulerOpen] = React.useState(false);
@@ -96,13 +96,14 @@ export function AppShell({ children, pageTitle }: { children: React.ReactNode, p
   };
 
   const MobileSidebarHeader = (
-    <SidebarHeader className="border-b">
+    <SheetHeader className="border-b p-2">
       <Link href="/" className="flex items-center gap-2 font-semibold">
         <Logo className="h-6 w-6" />
-        <span className="font-headline">Agenda+</span>
+        <SheetTitle>
+          <span className="font-headline">Agenda+</span>
+        </SheetTitle>
       </Link>
-      <SheetTitle className="sr-only">Menu</SheetTitle>
-    </SidebarHeader>
+    </SheetHeader>
   );
 
   const navItems = [
@@ -219,7 +220,7 @@ export function AppShell({ children, pageTitle }: { children: React.ReactNode, p
           </div>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          {React.cloneElement(children as React.ReactElement, { user })}
+          {React.cloneElement(children, { user })}
         </main>
       </SidebarInset>
       <AddAssignmentDialog open={addAssignmentOpen} onOpenChange={setAddAssignmentOpen} />
