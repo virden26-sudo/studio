@@ -251,7 +251,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
       </SidebarInset>
       <AddAssignmentDialog open={addAssignmentOpen} onOpenChange={setAddAssignmentOpen} />
       <IntelligentSchedulerDialog open={schedulerOpen} onOpenChange={setSchedulerOpen} />
-      <ImportSyllabusDialog open={importSyllSyllabusOpen} onOpenChange={setImportSyllabusOpen} />
+      <ImportSyllabusDialog open={importSyllabusOpen} onOpenChange={setImportSyllabusOpen} />
       <Dialog open={namePromptOpen} onOpenChange={(isOpen) => {
         if (user) {
           setNamePromptOpen(isOpen);
