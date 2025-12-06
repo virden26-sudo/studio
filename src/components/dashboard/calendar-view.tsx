@@ -41,7 +41,7 @@ export function CalendarView() {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>This Week's Deadlines</CardTitle>
+                <CardTitle className="text-gradient">This Week's Deadlines</CardTitle>
                 <CardDescription>
                     A look at your due dates for the upcoming week.
                 </CardDescription>

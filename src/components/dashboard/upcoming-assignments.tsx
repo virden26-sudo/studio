@@ -48,7 +48,7 @@ export function UpcomingAssignments() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Upcoming Assignments</CardTitle>
+        <CardTitle className="text-gradient">Upcoming Assignments</CardTitle>
         <CardDescription>
           Here's what's on your plate. Stay focused and productive!
         </CardDescription>

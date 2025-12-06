@@ -29,7 +29,7 @@ export function DashboardPage({ user }: { user?: User | null }) {
           <GradeOverview />
           <Card>
             <CardHeader>
-              <CardTitle>Connect to University</CardTitle>
+              <CardTitle className="text-gradient">Connect to University</CardTitle>
               <CardDescription>Import your assignments automatically.</CardDescription>
             </CardHeader>
             <CardContent>
@@ -41,7 +41,7 @@ export function DashboardPage({ user }: { user?: User | null }) {
           </Card>
           <Card>
             <CardHeader>
-                <CardTitle>Connect to ALEKS</CardTitle>
+                <CardTitle className="text-gradient">Connect to ALEKS</CardTitle>
                 <CardDescription>Access your math and chemistry assignments.</CardDescription>
             </CardHeader>
             <CardContent>
@@ -51,7 +51,7 @@ export function DashboardPage({ user }: { user?: User | null }) {
           </Card>
            <Card>
             <CardHeader>
-                <CardTitle>Academic Support</CardTitle>
+                <CardTitle className="text-gradient">Academic Support</CardTitle>
                 <CardDescription>Get help when you need it.</CardDescription>
             </CardHeader>
             <CardContent>

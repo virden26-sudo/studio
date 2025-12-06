@@ -14,7 +14,7 @@ export function WelcomeHeader({ user }: { user?: User | null }) {
   
   return (
     <div>
-      <h1 className="text-3xl font-bold tracking-tight font-headline">
+      <h1 className="text-3xl font-bold tracking-tight font-headline text-gradient">
         Welcome back, {name}!
       </h1>
       <p className="text-muted-foreground">

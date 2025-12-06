@@ -37,7 +37,7 @@ export function GradeOverview() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Grade Overview</CardTitle>
+        <CardTitle className="text-gradient">Grade Overview</CardTitle>
         <CardDescription>
           Your current estimated GPA is {gpa}
         </CardDescription>
