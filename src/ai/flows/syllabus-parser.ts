@@ -30,7 +30,7 @@ const parseSyllabusPrompt = ai.definePrompt({
   name: 'parseSyllabusPrompt',
   input: {schema: ParseSyllabusInputSchema},
   output: {schema: ParseSyllabusOutputSchema},
-  prompt: `You are an expert AI assistant that extracts a structured list of assignments from a course syllabus.
+  prompt: `You are an expert AI assistant that extracts a structured list of assignments, exams, and discussions from a course syllabus.
 
   The output should be a JSON object containing an 'assignments' array. Each object in the array should have the following keys:
   - task: The title or name of the task.
@@ -38,7 +38,7 @@ const parseSyllabusPrompt = ai.definePrompt({
   - course: The course the assignment is for, if specified.
   - details: Any additional details about the assignment, if specified.
 
-  Carefully read the provided syllabus text and identify all assignments, quizzes, exams, and projects.
+  Carefully read the provided syllabus text and identify all assignments, quizzes, exams, discussions, and projects.
 
   Syllabus Text:
   {{{syllabusText}}}
