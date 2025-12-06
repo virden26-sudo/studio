@@ -9,6 +9,7 @@
  */
 
 import {ai} from '@/ai/genkit';
+import {googleAI} from '@genkit-ai/google-genai';
 import {z} from 'genkit';
 import { ParseAssignmentOutputSchema } from '@/ai/schemas';
 
@@ -34,6 +35,7 @@ const parseSyllabusPrompt = ai.definePrompt({
   name: 'parseSyllabusPrompt',
   input: {schema: ParseSyllabusInputSchema},
   output: {schema: ParseSyllabusOutputSchema},
+  model: googleAI('gemini-1.5-flash'),
   prompt: `You are an expert AI assistant that extracts a structured list of assignments, exams, and discussions from a course syllabus.
 
   The output should be a JSON object containing an 'assignments' array. Each object in the array should have the following keys:
