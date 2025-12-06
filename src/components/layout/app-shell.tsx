@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import * as React from "react";
@@ -107,10 +108,9 @@ export function AppShell({ children }: { children: React.ReactElement }) {
   );
 
   const navItems = [
-    { href: "/", icon: Home, label: "Dashboard" },
-    { href: "#", icon: Book, label: "Assignments" },
-    { href: "#", icon: Star, label: "Grades" },
-    { href: "#", icon: Calendar, label: "Calendar" },
+    { href: "/assignments", icon: Book, label: "Assignments" },
+    { href: "/grades", icon: Star, label: "Grades" },
+    { href: "/calendar", icon: Calendar, label: "Calendar" },
   ];
 
   const pageTitles: { [key: string]: string } = {
@@ -148,6 +148,18 @@ export function AppShell({ children }: { children: React.ReactElement }) {
               </SidebarMenuItem>
           </SidebarMenu>
           <SidebarMenu className="mt-4">
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                asChild
+                isActive={pathname === '/'}
+                className="justify-start"
+              >
+                <Link href="/">
+                  <Home className="size-4 mr-2" />
+                  Dashboard
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
             {navItems.map((item) => (
               <SidebarMenuItem key={item.label}>
                 <SidebarMenuButton
