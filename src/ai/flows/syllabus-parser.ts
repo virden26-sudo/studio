@@ -13,7 +13,11 @@ import {z} from 'genkit';
 import { ParseAssignmentOutputSchema } from '@/ai/schemas';
 
 const ParseSyllabusInputSchema = z.object({
-  syllabusText: z.string().describe('The text content of a course syllabus.'),
+  syllabusFile: z
+    .string()
+    .describe(
+      "A syllabus file, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
+    ),
 });
 export type ParseSyllabusInput = z.infer<typeof ParseSyllabusInputSchema>;
 
@@ -38,10 +42,10 @@ const parseSyllabusPrompt = ai.definePrompt({
   - course: The course the assignment is for, if specified.
   - details: Any additional details about the assignment, if specified.
 
-  Carefully read the provided syllabus text and identify all assignments, quizzes, exams, discussions, and projects.
+  Carefully read the provided syllabus document and identify all assignments, quizzes, exams, discussions, and projects.
 
-  Syllabus Text:
-  {{{syllabusText}}}
+  Syllabus Document:
+  {{media url=syllabusFile}}
   `,
 });
 
