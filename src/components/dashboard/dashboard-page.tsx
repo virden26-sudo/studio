@@ -28,6 +28,7 @@ export function DashboardPage({ user, setImportSyllabusOpen }: DashboardPageProp
 
   return (
     <div className="flex flex-col gap-6">
+      {/* WelcomeHeader is now rendered here, inside the main content */}
       <WelcomeHeader user={user} />
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 flex flex-col gap-6">

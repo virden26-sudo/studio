@@ -117,7 +117,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
   ];
 
   const pageTitles: { [key: string]: string } = {
-    '/': 'Welcome',
+    '/': 'Dashboard',
     '/assignments': 'Assignments',
     '/grades': 'Grades',
     '/calendar': 'Calendar',
@@ -125,6 +125,14 @@ export function AppShell({ children }: { children: React.ReactElement }) {
   
   const pageTitle = pageTitles[pathname] || "";
   const showWelcomeHeader = pathname === '/';
+
+  if (!isUserLoaded) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div>Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <SidebarProvider>
@@ -228,7 +236,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
       <SidebarInset>
         <header className="flex h-14 items-center gap-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 sticky top-0 z-30 lg:h-[60px] lg:px-6">
           <SidebarTrigger />
-          {!showWelcomeHeader && <h1 className="flex-1 text-lg font-semibold md:text-xl font-headline text-gradient">{pageTitle}</h1>}
+          <h1 className="flex-1 text-lg font-semibold md:text-xl font-headline text-gradient">{pageTitle}</h1>
           <div className="flex-1" />
           <div className="flex items-center gap-2">
             <Button variant="outline" size="icon" className="md-hidden" onClick={() => setAddAssignmentOpen(true)}>
@@ -238,16 +246,12 @@ export function AppShell({ children }: { children: React.ReactElement }) {
           </div>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          {isUserLoaded ? (
-             React.cloneElement(children, { user, setImportSyllabusOpen })
-          ) : (
-            <div>Loading...</div>
-          )}
+           {React.cloneElement(children, { user, setImportSyllabusOpen })}
         </main>
       </SidebarInset>
       <AddAssignmentDialog open={addAssignmentOpen} onOpenChange={setAddAssignmentOpen} />
       <IntelligentSchedulerDialog open={schedulerOpen} onOpenChange={setSchedulerOpen} />
-      <ImportSyllabusDialog open={importSyllabusOpen} onOpenChange={setImportSyllabusOpen} />
+      <ImportSyllabusDialog open={importSyllSyllabusOpen} onOpenChange={setImportSyllabusOpen} />
       <Dialog open={namePromptOpen} onOpenChange={(isOpen) => {
         if (user) {
           setNamePromptOpen(isOpen);
@@ -276,5 +280,3 @@ export function AppShell({ children }: { children: React.ReactElement }) {
     </SidebarProvider>
   );
 }
-
-    
