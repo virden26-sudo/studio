@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -26,6 +27,8 @@ import {
   SidebarMenuButton,
   SidebarFooter,
   SidebarInset,
+  SheetHeader,
+  SheetTitle,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/icons";
@@ -42,6 +45,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { User } from "@/lib/types";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function AppShell({ children, pageTitle }: { children: React.ReactNode, pageTitle: string }) {
   const pathname = usePathname();
@@ -73,10 +84,6 @@ export function AppShell({ children, pageTitle }: { children: React.ReactNode, p
     }
   };
 
-  const handleSettingsClick = () => {
-    window.open("https://navigate.nu.edu/d2l/home/23776", "_blank");
-  };
-
   const getInitials = (name: string) => {
     return name.split(" ").map(n => n[0]).join("");
   }
@@ -88,9 +95,20 @@ export function AppShell({ children, pageTitle }: { children: React.ReactNode, p
     { href: "#", icon: Calendar, label: "Calendar" },
   ];
 
+  const MobileSidebarTitle = () => (
+    <SheetHeader>
+      <SheetTitle>
+        <Link href="/" className="flex items-center gap-2 font-semibold">
+          <Logo className="h-6 w-6 text-primary" />
+          <span className="font-headline">Agenda+</span>
+        </Link>
+      </SheetTitle>
+    </SheetHeader>
+  );
+
   return (
     <SidebarProvider>
-      <Sidebar>
+      <Sidebar mobileSidebarHeader={<MobileSidebarTitle/>}>
         <SidebarHeader className="border-b">
           <Link href="/" className="flex items-center gap-2 font-semibold">
               <Logo className="h-6 w-6 text-primary" />
@@ -134,28 +152,43 @@ export function AppShell({ children, pageTitle }: { children: React.ReactNode, p
         </SidebarContent>
         <SidebarFooter className="border-t p-2">
           <SidebarMenu>
-              <SidebarMenuItem>
-                  <SidebarMenuButton className="justify-start" onClick={handleSettingsClick}>
-                      <Settings className="size-4 mr-2" />
-                      Settings
-                  </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                  <SidebarMenuButton className="h-auto justify-start" onClick={() => setNamePromptOpen(true)}>
-                      <Avatar className="size-8 mr-2">
-                        {user?.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.name} data-ai-hint="person portrait" />}
-                        <AvatarFallback>{user ? getInitials(user.name) : <UserIcon/>}</AvatarFallback>
-                      </Avatar>
-                      {user ? (
-                        <div className="flex flex-col items-start">
-                          <span>{user.name}</span>
-                          <span className="text-xs text-muted-foreground">View Profile</span>
-                        </div>
-                      ) : (
-                        <span>Set User</span>
-                      )}
-                  </SidebarMenuButton>
-              </SidebarMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuItem>
+                    <SidebarMenuButton className="justify-start">
+                        <Settings className="size-4 mr-2" />
+                        Settings
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" side="top" align="start">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => setNamePromptOpen(true)}>
+                  View Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <SidebarMenuItem>
+                <SidebarMenuButton className="h-auto justify-start" onClick={() => setNamePromptOpen(true)}>
+                    <Avatar className="size-8 mr-2">
+                      {user?.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.name} data-ai-hint="person portrait" />}
+                      <AvatarFallback>{user ? getInitials(user.name) : <UserIcon/>}</AvatarFallback>
+                    </Avatar>
+                    {user ? (
+                      <div className="flex flex-col items-start">
+                        <span>{user.name}</span>
+                        <span className="text-xs text-muted-foreground">View Profile</span>
+                      </div>
+                    ) : (
+                      <span>Set User</span>
+                    )}
+                </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarFooter>
       </Sidebar>
@@ -200,3 +233,5 @@ export function AppShell({ children, pageTitle }: { children: React.ReactNode, p
     </SidebarProvider>
   );
 }
+
+    

@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -162,6 +163,7 @@ const Sidebar = React.forwardRef<
     side?: "left" | "right"
     variant?: "sidebar" | "floating" | "inset"
     collapsible?: "offcanvas" | "icon" | "none"
+    mobileSidebarHeader?: React.ReactNode
   }
 >(
   (
@@ -169,6 +171,7 @@ const Sidebar = React.forwardRef<
       side = "left",
       variant = "sidebar",
       collapsible = "offcanvas",
+      mobileSidebarHeader,
       className,
       children,
       ...props
@@ -206,6 +209,7 @@ const Sidebar = React.forwardRef<
             }
             side={side}
           >
+            {mobileSidebarHeader}
             <div className="flex h-full w-full flex-col">{children}</div>
           </SheetContent>
         </Sheet>
@@ -760,4 +764,8 @@ export {
   SidebarSeparator,
   SidebarTrigger,
   useSidebar,
+  SheetHeader,
+  SheetTitle
 }
+
+    
