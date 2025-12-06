@@ -3,7 +3,7 @@
 import type { User } from "@/lib/types";
 import { useAssignments } from "@/context/assignments-context";
 
-export function WelcomeHeader({ user }: { user: User | null }) {
+export function WelcomeHeader({ user }: { user?: User | null }) {
   const { assignments, loading } = useAssignments();
   
   const upcomingCount = loading ? 0 : assignments.filter(

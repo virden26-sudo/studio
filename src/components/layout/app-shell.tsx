@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import * as React from "react";
@@ -67,10 +65,15 @@ export function AppShell({ children }: { children: React.ReactElement }) {
   const [nameInput, setNameInput] = React.useState('');
 
   React.useEffect(() => {
-    const storedUser = localStorage.getItem("agendaUser");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    } else {
+    try {
+      const storedUser = localStorage.getItem("agendaUser");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      } else {
+        setNamePromptOpen(true);
+      }
+    } catch (e) {
+      console.error("Failed to parse user from local storage", e);
       setNamePromptOpen(true);
     }
   }, []);
@@ -89,6 +92,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
   };
 
   const getInitials = (name: string) => {
+    if (!name) return "";
     return name.split(" ").map(n => n[0]).join("");
   }
   
@@ -114,7 +118,6 @@ export function AppShell({ children }: { children: React.ReactElement }) {
   ];
 
   const pageTitles: { [key: string]: string } = {
-    '/': 'Dashboard',
     '/assignments': 'Assignments',
     '/grades': 'Grades',
     '/calendar': 'Calendar',
