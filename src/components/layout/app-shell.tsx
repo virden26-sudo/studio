@@ -104,9 +104,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
     <SheetHeader className="border-b p-2">
       <Link href="/" className="flex items-center gap-2 font-semibold">
         <Logo className="h-6 w-6" />
-        <SheetTitle>
-          <span className="font-headline">Agenda+</span>
-        </SheetTitle>
+        <SheetTitle>Agenda+</SheetTitle>
       </Link>
     </SheetHeader>
   );
@@ -239,7 +237,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
-        <header className="flex h-14 items-center gap-4 border-b bg-background/80 backdrop-blur-sm px-4 sticky top-0 z-30 lg:h-[60px] lg:px-6">
+        <header className="flex h-14 items-center gap-4 border-b bg-background px-4 sticky top-0 z-30 lg:h-[60px] lg:px-6">
           <SidebarTrigger />
           {showPageTitle && <h1 className="flex-1 text-lg font-semibold md:text-xl font-headline">{pageTitle}</h1>}
           <div className="flex-1" />

@@ -79,7 +79,6 @@
     @apply border-border;
   }
   body {
-    @apply text-foreground;
-    background: linear-gradient(to right, hsl(var(--primary)), hsl(var(--accent)));
+    @apply bg-background text-foreground;
   }
 }
