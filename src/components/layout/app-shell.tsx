@@ -28,7 +28,6 @@ import {
   SidebarFooter,
   SidebarInset,
   SheetHeader,
-  SheetTitle,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/icons";
@@ -218,7 +217,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
             <SidebarMenuItem>
                 <SidebarMenuButton className="h-auto justify-start" onClick={() => setNamePromptOpen(true)}>
                     <Avatar className="size-8 mr-2">
-                      {user?.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.name} data-ai-hint="person portrait" />}
+                      {user?.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.name || ''} data-ai-hint="person portrait" />}
                       <AvatarFallback>{user ? getInitials(user.name) : <UserIcon/>}</AvatarFallback>
                     </Avatar>
                      <div className="flex flex-col items-start group-data-[collapsible=icon]:hidden">
@@ -237,9 +236,9 @@ export function AppShell({ children }: { children: React.ReactElement }) {
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
-        <header className="flex h-14 items-center gap-4 border-b bg-background px-4 sticky top-0 z-30 lg:h-[60px] lg:px-6">
+        <header className="flex h-14 items-center gap-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 sticky top-0 z-30 lg:h-[60px] lg:px-6">
           <SidebarTrigger />
-          {showPageTitle && <h1 className="flex-1 text-lg font-semibold md:text-xl font-headline">{pageTitle}</h1>}
+          {showPageTitle && <h1 className="flex-1 text-lg font-semibold md:text-xl font-headline text-gradient">{pageTitle}</h1>}
           <div className="flex-1" />
           <div className="flex items-center gap-2">
             <Button variant="outline" size="icon" className="md:hidden" onClick={() => setAddAssignmentOpen(true)}>
@@ -249,7 +248,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
           </div>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          {React.cloneElement(children, { user })}
+          {React.cloneElement(children, { user, setImportSyllabusOpen })}
         </main>
       </SidebarInset>
       <AddAssignmentDialog open={addAssignmentOpen} onOpenChange={setAddAssignmentOpen} />
@@ -283,5 +282,3 @@ export function AppShell({ children }: { children: React.ReactElement }) {
     </SidebarProvider>
   );
 }
-
-    
