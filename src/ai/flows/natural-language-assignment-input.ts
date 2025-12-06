@@ -10,6 +10,7 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { ParseAssignmentOutputSchema } from '@/ai/schemas';
 
 const ParseAssignmentInputSchema = z.object({
   assignmentText: z
@@ -17,14 +18,8 @@ const ParseAssignmentInputSchema = z.object({
     .describe('A natural language description of an assignment.'),
 });
 export type ParseAssignmentInput = z.infer<typeof ParseAssignmentInputSchema>;
-
-const ParseAssignmentOutputSchema = z.object({
-  task: z.string().describe('The title or name of the task.'),
-  dueDate: z.string().describe('The due date of the assignment in ISO format (YYYY-MM-DD).'),
-  course: z.string().optional().describe('The course the assignment is for.'),
-  details: z.string().optional().describe('Any additional details about the assignment.'),
-});
 export type ParseAssignmentOutput = z.infer<typeof ParseAssignmentOutputSchema>;
+
 
 export async function parseAssignment(input: ParseAssignmentInput): Promise<ParseAssignmentOutput> {
   return parseAssignmentFlow(input);

@@ -1,0 +1,58 @@
+'use server';
+
+/**
+ * @fileOverview A flow that parses a syllabus to extract assignments.
+ *
+ * - parseSyllabus - A function that parses syllabus text.
+ * - ParseSyllabusInput - The input type for the parseSyllabus function.
+ * - ParseSyllabusOutput - The return type for the parseSyllabus function.
+ */
+
+import {ai} from '@/ai/genkit';
+import {z} from 'genkit';
+import { ParseAssignmentOutputSchema } from '@/ai/schemas';
+
+const ParseSyllabusInputSchema = z.object({
+  syllabusText: z.string().describe('The text content of a course syllabus.'),
+});
+export type ParseSyllabusInput = z.infer<typeof ParseSyllabusInputSchema>;
+
+const ParseSyllabusOutputSchema = z.object({
+    assignments: z.array(ParseAssignmentOutputSchema)
+});
+export type ParseSyllabusOutput = z.infer<typeof ParseSyllabusOutputSchema>;
+
+export async function parseSyllabus(input: ParseSyllabusInput): Promise<ParseSyllabusOutput> {
+  return parseSyllabusFlow(input);
+}
+
+const parseSyllabusPrompt = ai.definePrompt({
+  name: 'parseSyllabusPrompt',
+  input: {schema: ParseSyllabusInputSchema},
+  output: {schema: ParseSyllabusOutputSchema},
+  prompt: `You are an expert AI assistant that extracts a structured list of assignments from a course syllabus.
+
+  The output should be a JSON object containing an 'assignments' array. Each object in the array should have the following keys:
+  - task: The title or name of the task.
+  - dueDate: The due date of the assignment in ISO format (YYYY-MM-DD). Use the current year.
+  - course: The course the assignment is for, if specified.
+  - details: Any additional details about the assignment, if specified.
+
+  Carefully read the provided syllabus text and identify all assignments, quizzes, exams, and projects.
+
+  Syllabus Text:
+  {{{syllabusText}}}
+  `,
+});
+
+const parseSyllabusFlow = ai.defineFlow(
+  {
+    name: 'parseSyllabusFlow',
+    inputSchema: ParseSyllabusInputSchema,
+    outputSchema: ParseSyllabusOutputSchema,
+  },
+  async input => {
+    const {output} = await parseSyllabusPrompt(input);
+    return output!;
+  }
+);

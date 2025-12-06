@@ -11,6 +11,7 @@ import {
   Settings,
   Star,
   User as UserIcon,
+  FileUp,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -53,11 +54,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ImportSyllabusDialog } from "../dashboard/import-syllabus-dialog";
 
 export function AppShell({ children, pageTitle }: { children: React.ReactNode, pageTitle: string }) {
   const pathname = usePathname();
   const [addAssignmentOpen, setAddAssignmentOpen] = React.useState(false);
   const [schedulerOpen, setSchedulerOpen] = React.useState(false);
+  const [importSyllabusOpen, setImportSyllabusOpen] = React.useState(false);
   const [user, setUser] = React.useState<User | null>(null);
   const [namePromptOpen, setNamePromptOpen] = React.useState(false);
   const [nameInput, setNameInput] = React.useState('');
@@ -87,6 +90,10 @@ export function AppShell({ children, pageTitle }: { children: React.ReactNode, p
   const getInitials = (name: string) => {
     return name.split(" ").map(n => n[0]).join("");
   }
+  
+  const handlePortalClick = () => {
+    window.open("https://navigate.nu.edu/d2l/home/23776", "_blank");
+  };
 
   const navItems = [
     { href: "/", icon: Home, label: "Dashboard" },
@@ -95,20 +102,9 @@ export function AppShell({ children, pageTitle }: { children: React.ReactNode, p
     { href: "#", icon: Calendar, label: "Calendar" },
   ];
 
-  const MobileSidebarTitle = () => (
-    <SheetHeader>
-      <SheetTitle>
-        <Link href="/" className="flex items-center gap-2 font-semibold">
-          <Logo className="h-6 w-6 text-primary" />
-          <span className="font-headline">Agenda+</span>
-        </Link>
-      </SheetTitle>
-    </SheetHeader>
-  );
-
   return (
     <SidebarProvider>
-      <Sidebar mobileSidebarHeader={<MobileSidebarTitle/>}>
+      <Sidebar>
         <SidebarHeader className="border-b">
           <Link href="/" className="flex items-center gap-2 font-semibold">
               <Logo className="h-6 w-6 text-primary" />
@@ -121,6 +117,12 @@ export function AppShell({ children, pageTitle }: { children: React.ReactNode, p
                   <Button variant="default" className="w-full justify-start h-10" onClick={() => setAddAssignmentOpen(true)}>
                       <Plus className="mr-2 size-4" />
                       Add Assignment
+                  </Button>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                  <Button variant="secondary" className="w-full justify-start h-10" onClick={() => setImportSyllabusOpen(true)}>
+                      <FileUp className="mr-2 size-4" />
+                      Import Syllabus
                   </Button>
               </SidebarMenuItem>
           </SidebarMenu>
@@ -167,6 +169,9 @@ export function AppShell({ children, pageTitle }: { children: React.ReactNode, p
                 <DropdownMenuItem onClick={() => setNamePromptOpen(true)}>
                   View Profile
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={handlePortalClick}>
+                  University Portal
+                </DropdownMenuItem>
                 <DropdownMenuItem>
                   Log out
                 </DropdownMenuItem>
@@ -209,6 +214,7 @@ export function AppShell({ children, pageTitle }: { children: React.ReactNode, p
       </SidebarInset>
       <AddAssignmentDialog open={addAssignmentOpen} onOpenChange={setAddAssignmentOpen} />
       <IntelligentSchedulerDialog open={schedulerOpen} onOpenChange={setSchedulerOpen} />
+      <ImportSyllabusDialog open={importSyllabusOpen} onOpenChange={setImportSyllabusOpen} />
       <Dialog open={namePromptOpen} onOpenChange={nameInput ? setAddAssignmentOpen : () => {}}>
         <DialogContent onInteractOutside={(e) => e.preventDefault()}>
             <DialogHeader>
