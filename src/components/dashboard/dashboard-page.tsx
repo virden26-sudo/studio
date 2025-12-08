@@ -8,6 +8,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import type { User } from "@/lib/types";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from 'react';
 
 type DashboardPageProps = {
   user?: User | null;
@@ -17,6 +18,12 @@ type DashboardPageProps = {
 export function DashboardPage({ user, setImportSyllabusOpen }: DashboardPageProps) {
   
   const router = useRouter();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
 
   const handleAleksClick = () => {
     window.open("https://www.aleks.com/", "_blank");
@@ -29,7 +36,7 @@ export function DashboardPage({ user, setImportSyllabusOpen }: DashboardPageProp
   return (
     <div className="flex flex-col gap-6">
       {/* WelcomeHeader is now rendered here, inside the main content */}
-      {user && <WelcomeHeader user={user} />}
+      {isClient && user && <WelcomeHeader user={user} />}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 flex flex-col gap-6">
           <UpcomingAssignments />
