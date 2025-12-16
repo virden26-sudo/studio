@@ -27,6 +27,7 @@ import {
   SidebarFooter,
   SidebarInset,
   SheetHeader,
+  SheetTitle,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/icons";
@@ -36,7 +37,7 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
+  DialogTitle as UIDialogTitle,
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
@@ -103,6 +104,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
 
   const MobileSidebarHeader = (
     <SheetHeader className="border-b p-4">
+       <SheetTitle className="sr-only">Main Menu</SheetTitle>
       <Link href="/" className="flex items-center gap-2 font-semibold">
         <Logo className="h-6 w-6" />
         <span className="font-headline text-gradient">Agenda+</span>
@@ -258,7 +260,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
       }}>
         <DialogContent onInteractOutside={(e) => {if (!user) e.preventDefault()}}>
             <DialogHeader>
-                <DialogTitle>Welcome to Agenda+</DialogTitle>
+                <UIDialogTitle>Welcome to Agenda+</UIDialogTitle>
                 <DialogDescription>Please enter your name to personalize your experience.</DialogDescription>
             </DialogHeader>
             <div className="space-y-2 py-4">
