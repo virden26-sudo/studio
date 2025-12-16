@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
@@ -6,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { Bot, Video } from "lucide-react";
+import { Bot, GraduationCap, Calculator, Library, ExternalLink, BrainCircuit } from "lucide-react";
 import { IntelligentSchedulerDialog } from "./intelligent-scheduler-dialog";
 import { LiveSessionCard } from "./live-session-card";
 
@@ -43,21 +42,10 @@ export function StudyPage() {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <Card>
             <CardHeader>
-                <CardTitle className="text-gradient">Intelligent Scheduler</CardTitle>
-                <CardDescription>Let AI build you a custom study plan.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">The AI scheduler analyzes your upcoming assignments to suggest an optimal study schedule.</p>
-                <Button className="w-full" onClick={() => setSchedulerOpen(true)}>
-                    <Bot className="mr-2 h-4 w-4" />
-                    Generate Study Plan
-                </Button>
-            </CardContent>
-        </Card>
-        <LiveSessionCard />
-        <Card>
-            <CardHeader>
-              <CardTitle className="text-gradient">Student Portal</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-gradient">
+                <GraduationCap />
+                Student Portal
+              </CardTitle>
               <CardDescription>Access your university's resources.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -70,28 +58,57 @@ export function StudyPage() {
                   placeholder="https://my.school.edu"
                 />
               </div>
-              <Button className="w-full" onClick={handleSavePortalUrl}>Go to Portal</Button>
+              <Button className="w-full" onClick={handleSavePortalUrl}>
+                <ExternalLink className="mr-2"/>
+                Go to Portal
+              </Button>
             </CardContent>
         </Card>
         <Card>
-        <CardHeader>
-            <CardTitle className="text-gradient">Connect to ALEKS</CardTitle>
-            <CardDescription>Access your math and chemistry assignments.</CardDescription>
-        </CardHeader>
-        <CardContent>
-            <p className="text-sm text-muted-foreground mb-4">Go to the ALEKS website to complete your interactive assignments.</p>
-            <Button className="w-full" onClick={handleAleksClick}>Go to ALEKS</Button>
-        </CardContent>
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-gradient">
+                    <BrainCircuit />
+                    Intelligent Scheduler
+                </CardTitle>
+                <CardDescription>Let AI build you a custom study plan.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">The AI scheduler analyzes your upcoming assignments to suggest an optimal study schedule.</p>
+                <Button className="w-full" onClick={() => setSchedulerOpen(true)}>
+                    <Bot className="mr-2 h-4 w-4" />
+                    Generate Study Plan
+                </Button>
+            </CardContent>
         </Card>
         <Card>
-        <CardHeader>
-            <CardTitle className="text-gradient">Academic Support</CardTitle>
-            <CardDescription>Get help when you need it.</CardDescription>
-        </CardHeader>
-        <CardContent>
-            <p className="text-sm text-muted-foreground mb-4">Connect with your university's resources for academic support and tutoring.</p>
-            <Button className="w-full" variant="secondary" onClick={handleLearningCenterClick}>Visit Learning Center</Button>
-        </CardContent>
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-gradient">
+                    <Calculator />
+                    Connect to ALEKS
+                </CardTitle>
+                <CardDescription>Access your math and chemistry assignments.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">Go to the ALEKS website to complete your interactive assignments.</p>
+                <Button className="w-full" onClick={handleAleksClick}>
+                    <ExternalLink className="mr-2"/>
+                    Go to ALEKS
+                </Button>
+            </CardContent>
+        </Card>
+        <LiveSessionCard />
+        <Card>
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-gradient">
+                    <Library />
+                    Academic Support
+                </CardTitle>
+                <CardDescription>Get help when you need it.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">Connect with your university's resources for academic support and tutoring.</p>
+                <Button className="w-full" variant="secondary" onClick={handleLearningCenterClick}>Visit Learning Center</Button>
+            </CardContent>
         </Card>
     </div>
     <IntelligentSchedulerDialog open={schedulerOpen} onOpenChange={setSchedulerOpen} />

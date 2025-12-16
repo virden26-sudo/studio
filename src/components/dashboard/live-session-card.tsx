@@ -30,7 +30,10 @@ export function LiveSessionCard() {
     return (
         <Card>
             <CardHeader>
-              <CardTitle className="text-gradient">Live Session</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-gradient">
+                <Video />
+                Live Session
+              </CardTitle>
               <CardDescription>Join your remote class or study group.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -44,7 +47,6 @@ export function LiveSessionCard() {
                 />
               </div>
               <Button className="w-full" onClick={handleJoinZoom} disabled={!zoomLink}>
-                <Video className="mr-2" />
                 Join Session
               </Button>
             </CardContent>
