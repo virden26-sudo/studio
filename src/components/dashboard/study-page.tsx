@@ -6,17 +6,22 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { Bot } from "lucide-react";
+import { Bot, Video } from "lucide-react";
 import { IntelligentSchedulerDialog } from "./intelligent-scheduler-dialog";
 
 export function StudyPage() {
   const [portalUrl, setPortalUrl] = useState("https://navigate.nu.edu/d2l/home");
   const [schedulerOpen, setSchedulerOpen] = useState(false);
+  const [zoomLink, setZoomLink] = useState("");
 
   useEffect(() => {
     const savedUrl = localStorage.getItem("studentPortalUrl");
     if (savedUrl) {
       setPortalUrl(savedUrl);
+    }
+    const savedZoomLink = localStorage.getItem("zoomLink");
+    if (savedZoomLink) {
+        setZoomLink(savedZoomLink);
     }
   }, []);
 
@@ -28,6 +33,15 @@ export function StudyPage() {
     localStorage.setItem("studentPortalUrl", portalUrl);
     window.open(portalUrl, "_blank");
   }
+
+  const handleZoomLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setZoomLink(e.target.value);
+  };
+
+  const handleJoinZoom = () => {
+    localStorage.setItem("zoomLink", zoomLink);
+    window.open(zoomLink, "_blank");
+  };
 
   const handleAleksClick = () => {
     window.open("https://www.aleks.com/", "_blank");
@@ -53,6 +67,27 @@ export function StudyPage() {
                 </Button>
             </CardContent>
         </Card>
+        <Card>
+            <CardHeader>
+              <CardTitle className="text-gradient">Live Session</CardTitle>
+              <CardDescription>Join your remote class or study group.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="zoom-link">Zoom Meeting Link</Label>
+                <Input
+                  id="zoom-link"
+                  value={zoomLink}
+                  onChange={handleZoomLinkChange}
+                  placeholder="https://zoom.us/j/..."
+                />
+              </div>
+              <Button className="w-full" onClick={handleJoinZoom} disabled={!zoomLink}>
+                <Video className="mr-2" />
+                Join Session
+              </Button>
+            </CardContent>
+          </Card>
         <Card>
             <CardHeader>
               <CardTitle className="text-gradient">Student Portal</CardTitle>
