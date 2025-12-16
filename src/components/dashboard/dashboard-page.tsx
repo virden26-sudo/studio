@@ -26,6 +26,10 @@ export function DashboardPage({ user, setImportSyllabusOpen }: DashboardPageProp
     window.open("https://www.nu.edu/students/academic-success-center/", "_blank");
   };
 
+  const handlePortalClick = () => {
+    window.open("https://navigate.nu.edu/d2l/home", "_blank");
+  };
+
   return (
     <div className="flex flex-col gap-6">
       {user && <WelcomeHeader user={user} />}
@@ -40,14 +44,14 @@ export function DashboardPage({ user, setImportSyllabusOpen }: DashboardPageProp
           <GradeOverview />
           <Card>
             <CardHeader>
-              <CardTitle className="text-gradient">Connect to University</CardTitle>
-              <CardDescription>Import your assignments automatically.</CardDescription>
+              <CardTitle className="text-gradient">Student Portal</CardTitle>
+              <CardDescription>Access your university's resources.</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
-                Link your student account to sync your courses and due dates directly from your university's portal.
+                Go to your university's portal to find your syllabus, grades, and other resources.
               </p>
-              <Button className="w-full" onClick={() => setImportSyllabusOpen?.(true)}>Connect & Sync</Button>
+              <Button className="w-full" onClick={handlePortalClick}>Go to Portal</Button>
             </CardContent>
           </Card>
           <Card>
