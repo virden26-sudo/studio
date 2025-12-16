@@ -1,7 +1,6 @@
 
 "use client";
 
-import { useState } from "react";
 import { useAssignments } from "@/context/assignments-context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -10,8 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { differenceInDays, formatDistanceToNowStrict } from 'date-fns';
 import { CircleOff } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { Assignment } from "@/lib/types";
 
 export function AssignmentsList() {
@@ -36,45 +33,48 @@ export function AssignmentsList() {
         return { text: `Due in ${formatDistanceToNowStrict(dueDate)}`, className: "text-muted-foreground" };
     }
 
-    const AssignmentRow = ({ assignment }: { assignment: Assignment }) => {
+    const AssignmentItem = ({ assignment }: { assignment: Assignment }) => {
         const dueDateInfo = getDueDateInfo(assignment.dueDate);
         return (
-            <TableRow key={assignment.id}>
-                <TableCell className="w-10">
+             <AccordionItem value={assignment.id}>
+                <div className="flex items-center gap-4 py-4">
                     <Checkbox
+                        id={`checkbox-${assignment.id}`}
                         checked={assignment.completed}
-                        onCheckedChange={() => toggleAssignment(assignment.id)}
+                        onCheckedChange={(e) => {
+                            e.stopPropagation();
+                            toggleAssignment(assignment.id);
+                        }}
                         aria-label="Toggle assignment completion"
                     />
-                </TableCell>
-                <TableCell>
-                    <div className="font-medium">{assignment.title}</div>
-                    <div className="text-sm text-muted-foreground">{assignment.course}</div>
-                </TableCell>
-                <TableCell>
-                    <p className={cn("text-sm font-medium", dueDateInfo.className)}>{dueDateInfo.text}</p>
-                </TableCell>
-                <TableCell className="text-right">
-                    <Badge variant={getPriorityBadgeVariant(assignment.priority)} className="capitalize">{assignment.priority}</Badge>
-                </TableCell>
-            </TableRow>
+                    <AccordionTrigger className="w-full p-0">
+                        <div className="flex-1 text-left">
+                            <div className={cn("font-medium", assignment.completed && "line-through text-muted-foreground")}>{assignment.title}</div>
+                            <div className={cn("text-sm text-muted-foreground", assignment.completed && "line-through")}>{assignment.course}</div>
+                        </div>
+                        <div className="text-right mx-4">
+                             <p className={cn("text-sm font-medium", dueDateInfo.className)}>{dueDateInfo.text}</p>
+                        </div>
+                        <Badge variant={getPriorityBadgeVariant(assignment.priority)} className="capitalize">{assignment.priority}</Badge>
+                    </AccordionTrigger>
+                </div>
+                <AccordionContent>
+                   <div className="prose prose-sm dark:prose-invert text-muted-foreground pl-10 pb-4">
+                        {assignment.details ? (
+                            <p>{assignment.details}</p>
+                        ) : (
+                            <p>No additional details provided for this assignment.</p>
+                        )}
+                    </div>
+                </AccordionContent>
+            </AccordionItem>
         )
     };
     
-    const AssignmentsTable = ({ assignments }: { assignments: Assignment[] }) => (
-        <Table>
-            <TableHeader>
-                <TableRow>
-                    <TableHead className="w-10"></TableHead>
-                    <TableHead>Assignment</TableHead>
-                    <TableHead>Due Date</TableHead>
-                    <TableHead className="text-right">Priority</TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {assignments.map(assignment => <AssignmentRow key={assignment.id} assignment={assignment} />)}
-            </TableBody>
-        </Table>
+    const AssignmentsAccordion = ({ assignments }: { assignments: Assignment[] }) => (
+       <Accordion type="multiple" className="w-full">
+            {assignments.map(assignment => <AssignmentItem key={assignment.id} assignment={assignment} />)}
+        </Accordion>
     );
 
     const NoAssignments = ({title}: {title: string}) => (
@@ -97,7 +97,7 @@ export function AssignmentsList() {
                 </CardHeader>
                 <CardContent>
                     {upcomingAssignments.length > 0 ? (
-                        <AssignmentsTable assignments={upcomingAssignments} />
+                        <AssignmentsAccordion assignments={upcomingAssignments} />
                     ) : (
                         <NoAssignments title="No upcoming assignments!" />
                     )}
@@ -111,7 +111,7 @@ export function AssignmentsList() {
                 </CardHeader>
                 <CardContent>
                     {completedAssignments.length > 0 ? (
-                        <AssignmentsTable assignments={completedAssignments} />
+                        <AssignmentsAccordion assignments={completedAssignments} />
                     ) : (
                         <NoAssignments title="No completed assignments yet." />
                     )}
