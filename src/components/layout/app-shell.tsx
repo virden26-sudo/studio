@@ -12,6 +12,7 @@ import {
   User as UserIcon,
   FileUp,
   BrainCircuit,
+  Video,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -187,6 +188,19 @@ export function AppShell({ children }: { children: React.ReactElement }) {
                   >
                     <Bot className="size-4 mr-2" />
                     <span className="group-data-[collapsible=icon]:hidden">AI Scheduler</span>
+                  </SidebarMenuButton>
+            </SidebarMenuItem>
+             <SidebarMenuItem>
+                <SidebarMenuButton
+                    asChild
+                    isActive={pathname==='/study' && !pathname.startsWith('/study/')}
+                    className="justify-start"
+                    tooltip="Live Session"
+                  >
+                    <Link href="/study">
+                        <Video className="size-4 mr-2" />
+                        <span className="group-data-[collapsible=icon]:hidden">Live Session</span>
+                    </Link>
                   </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>

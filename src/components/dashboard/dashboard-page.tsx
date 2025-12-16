@@ -5,13 +5,9 @@ import { WelcomeHeader } from "./welcome-header";
 import { UpcomingAssignments } from "./upcoming-assignments";
 import { GradeOverview } from "./grade-overview";
 import { CalendarView } from "./calendar-view";
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import type { User } from "@/lib/types";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+import { LiveSessionCard } from "./live-session-card";
 
 type DashboardPageProps = {
   user?: User | null;
@@ -34,6 +30,7 @@ export function DashboardPage({ user, setImportSyllabusOpen }: DashboardPageProp
         </div>
         <div className="lg:col-span-1 flex flex-col gap-6">
           <GradeOverview />
+          <LiveSessionCard />
         </div>
       </div>
     </div>
