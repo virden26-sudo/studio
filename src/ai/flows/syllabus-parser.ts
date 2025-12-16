@@ -40,11 +40,13 @@ const parseSyllabusPrompt = ai.definePrompt({
 
   The output should be a JSON object containing an 'assignments' array. Each object in the array should have the following keys:
   - task: The title or name of the task.
-  - dueDate: The due date of the assignment in ISO format (YYYY-MM-DD).
+  - dueDate: The due date of the assignment in ISO format (YYYY-MM-DD). If no year is specified, assume the current year.
   - course: The course the assignment is for, if specified.
   - details: Any additional details about the assignment, if specified.
 
-  Carefully read the provided syllabus document and identify all assignments, quizzes, exams, discussions, and projects. Do not make any assumptions about the current year.
+  Today's date is {{currentDate}}.
+
+  Carefully read the provided syllabus document and identify all assignments, quizzes, exams, discussions, and projects.
 
   Syllabus Document:
   {{media url=syllabusFile}}
@@ -58,7 +60,10 @@ const parseSyllabusFlow = ai.defineFlow(
     outputSchema: ParseSyllabusOutputSchema,
   },
   async input => {
-    const {output} = await parseSyllabusPrompt(input);
+    const {output} = await parseSyllabusPrompt({
+      ...input,
+      currentDate: new Date().toLocaleDateString('en-CA'),
+    });
     return output!;
   }
 );
