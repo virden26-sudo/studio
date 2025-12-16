@@ -15,9 +15,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { parseSyllabus } from "@/ai/flows/syllabus-parser";
 import { parseSyllabusText } from "@/ai/flows/syllabus-text-parser";
-import { Loader2, Sparkles, Upload, FileText } from "lucide-react";
+import { Loader2, Sparkles, Upload, FileText, ExternalLink } from "lucide-react";
 import { useAssignments } from "@/context/assignments-context";
 import type { ParsedAssignment } from "@/lib/types";
+import Link from "next/link";
 
 type ImportSyllabusDialogProps = {
   open: boolean;
@@ -118,6 +119,10 @@ export function ImportSyllabusDialog({ open, onOpenChange }: ImportSyllabusDialo
     onOpenChange(isOpen);
   }
 
+  const handlePortalClick = () => {
+    window.open("https://navigate.nu.edu/d2l/home/23776", "_blank");
+  };
+
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-lg" onInteractOutside={(e) => {
@@ -150,7 +155,13 @@ export function ImportSyllabusDialog({ open, onOpenChange }: ImportSyllabusDialo
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="paste" className="mt-4">
-                <div className="space-y-4">
+                <div className="space-y-2">
+                  <div className="flex justify-end">
+                      <Button variant="link" className="h-auto p-0 text-xs" onClick={handlePortalClick}>
+                          <ExternalLink className="mr-1 size-3"/>
+                          Browse for Syllabus
+                      </Button>
+                  </div>
                   <Textarea
                     placeholder="Paste your syllabus content here..."
                     className="h-48 resize-none"
