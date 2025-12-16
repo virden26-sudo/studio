@@ -1,21 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { suggestStudySchedule } from "@/ai/flows/intelligent-study-schedule-suggestions";
-import { Loader2, Bot, Sparkles } from "lucide-react";
+import { Loader2, Bot, Sparkles, Download, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../ui/card";
 import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
 import { useAssignments } from "@/context/assignments-context";
+import * as ics from 'ics';
+import { startOfWeek, addDays, parse } from "date-fns";
 
 type IntelligentSchedulerDialogProps = {
   open: boolean;
@@ -29,11 +32,29 @@ type SuggestedScheduleItem = {
     assignment: string;
 };
 
+type Suggestion = {
+    suggestedSchedule: SuggestedScheduleItem[];
+    reasoning: string;
+};
+
+const dayNameToIndex: { [key: string]: number } = {
+  Sunday: 0, Monday: 1, Tuesday: 2, Wednesday: 3, Thursday: 4, Friday: 5, Saturday: 6,
+};
+
 export function IntelligentSchedulerDialog({ open, onOpenChange }: IntelligentSchedulerDialogProps) {
   const { toast } = useToast();
   const { assignments } = useAssignments();
   const [isLoading, setIsLoading] = useState(false);
-  const [suggestion, setSuggestion] = useState<{ suggestedSchedule: SuggestedScheduleItem[], reasoning: string } | null>(null);
+  const [suggestion, setSuggestion] = useState<Suggestion | null>(null);
+
+  useEffect(() => {
+    if (open) {
+      const savedSuggestion = localStorage.getItem("studyPlan");
+      if (savedSuggestion) {
+        setSuggestion(JSON.parse(savedSuggestion));
+      }
+    }
+  }, [open]);
 
   async function generateSchedule() {
     setIsLoading(true);
@@ -43,7 +64,9 @@ export function IntelligentSchedulerDialog({ open, onOpenChange }: IntelligentSc
         assignments: JSON.stringify(assignments.filter(a => !a.completed)),
       });
       const parsedSchedule = JSON.parse(result.suggestedSchedule);
-      setSuggestion({suggestedSchedule: parsedSchedule, reasoning: result.reasoning});
+      const newSuggestion = {suggestedSchedule: parsedSchedule, reasoning: result.reasoning};
+      setSuggestion(newSuggestion);
+      localStorage.setItem("studyPlan", JSON.stringify(newSuggestion));
     } catch (error) {
       console.error(error);
       toast({
@@ -55,14 +78,70 @@ export function IntelligentSchedulerDialog({ open, onOpenChange }: IntelligentSc
       setIsLoading(false);
     }
   }
-
-  const handleClose = (isOpen: boolean) => {
-    // Do not clear suggestion on close, so user can see it again.
-    onOpenChange(isOpen);
+  
+  const handleClearPlan = () => {
+    localStorage.removeItem("studyPlan");
+    setSuggestion(null);
+    toast({
+        title: "Study Plan Cleared",
+        description: "Your saved study plan has been removed.",
+    });
   }
 
+  const handleSaveToCalendar = () => {
+    if (!suggestion) return;
+
+    const events: ics.EventAttributes[] = [];
+    const weekStart = startOfWeek(new Date());
+
+    suggestion.suggestedSchedule.forEach(item => {
+      const dayIndex = dayNameToIndex[item.day];
+      if (dayIndex === undefined) return;
+
+      const eventDate = addDays(weekStart, dayIndex);
+      
+      const startTime = parse(item.startTime, 'h:mm a', new Date());
+      const endTime = parse(item.endTime, 'h:mm a', new Date());
+
+      const startDateTime = new Date(eventDate);
+      startDateTime.setHours(startTime.getHours(), startTime.getMinutes());
+
+      const endDateTime = new Date(eventDate);
+      endDateTime.setHours(endTime.getHours(), endTime.getMinutes());
+      
+      events.push({
+        title: `Study: ${item.assignment}`,
+        start: [startDateTime.getFullYear(), startDateTime.getMonth() + 1, startDateTime.getDate(), startDateTime.getHours(), startDateTime.getMinutes()],
+        end: [endDateTime.getFullYear(), endDateTime.getMonth() + 1, endDateTime.getDate(), endDateTime.getHours(), endDateTime.getMinutes()],
+        description: `Dedicated study time for ${item.assignment}.`,
+        alarms: [{ action: 'display', description: 'Reminder', trigger: { minutes: 15, before: true } }]
+      });
+    });
+
+    const { error, value } = ics.createEvents(events);
+
+    if (error) {
+      console.error(error);
+      toast({ variant: 'destructive', title: 'Error creating calendar file.' });
+      return;
+    }
+
+    if (value) {
+      const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'study-plan.ics');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast({ title: 'Calendar file created!', description: 'Your study plan has been downloaded as an .ics file.' });
+    }
+  };
+
+
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md md:max-w-2xl lg:max-w-4xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -97,7 +176,7 @@ export function IntelligentSchedulerDialog({ open, onOpenChange }: IntelligentSc
                   ) : (
                     <Bot className="mr-2 h-4 w-4" />
                   )}
-                  {suggestion ? "Regenerate Study Plan" : "Generate Study Plan"}
+                  {suggestion ? "Generate New Plan" : "Generate Study Plan"}
                 </Button>
                 
                 {isLoading && (
@@ -134,6 +213,14 @@ export function IntelligentSchedulerDialog({ open, onOpenChange }: IntelligentSc
                                 <p className="text-sm text-muted-foreground whitespace-pre-wrap">{suggestion.reasoning}</p>
                             </ScrollArea>
                         </CardContent>
+                        <DialogFooter className="p-4 border-t gap-2">
+                             <Button variant="outline" onClick={handleClearPlan} className="w-full sm:w-auto">
+                                <Trash2 className="mr-2"/> Clear Plan
+                            </Button>
+                            <Button onClick={handleSaveToCalendar} className="w-full sm:w-auto">
+                                <Download className="mr-2"/> Save to Calendar (.ics)
+                            </Button>
+                        </DialogFooter>
                     </Card>
                 )}
             </div>
