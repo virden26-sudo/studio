@@ -13,6 +13,7 @@ import {
   FileUp,
   BrainCircuit,
   Video,
+  Trash2,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -44,6 +45,16 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type { User } from "@/lib/types";
@@ -64,6 +75,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
   const [importSyllabusOpen, setImportSyllabusOpen] = React.useState(false);
   const [user, setUser] = React.useState<User | null>(null);
   const [namePromptOpen, setNamePromptOpen] = React.useState(false);
+  const [resetDialogOpen, setResetDialogOpen] = React.useState(false);
   const [nameInput, setNameInput] = React.useState('');
   const [isUserLoaded, setIsUserLoaded] = React.useState(false);
 
@@ -110,6 +122,16 @@ export function AppShell({ children }: { children: React.ReactElement }) {
     setUser(null);
     setNamePromptOpen(true);
   }
+
+  const handleResetApp = () => {
+    localStorage.removeItem("agendaUser");
+    localStorage.removeItem("agendaAssignments");
+    localStorage.removeItem("agendaGrades");
+    localStorage.removeItem("studyPlan");
+    localStorage.removeItem("studentPortalUrl");
+    localStorage.removeItem("zoomLink");
+    window.location.reload();
+  };
 
   const MobileSidebarHeader = (
     <SheetHeader className="border-b p-4">
@@ -235,6 +257,11 @@ export function AppShell({ children }: { children: React.ReactElement }) {
                 <DropdownMenuItem onClick={handleLogout}>
                   Log out
                 </DropdownMenuItem>
+                 <DropdownMenuSeparator />
+                <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive" onClick={() => setResetDialogOpen(true)}>
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Reset App
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
@@ -303,6 +330,23 @@ export function AppShell({ children }: { children: React.ReactElement }) {
             </DialogFooter>
         </DialogContent>
       </Dialog>
+      <AlertDialog open={resetDialogOpen} onOpenChange={setResetDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete all your
+              assignments, grades, and other saved data from your browser.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleResetApp} className="bg-destructive hover:bg-destructive/90">Reset App</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </SidebarProvider>
   );
 }
+
+    
