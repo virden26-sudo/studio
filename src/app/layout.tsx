@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 import { AssignmentsProvider } from '@/context/assignments-context';
+import { GradesProvider } from '@/context/grades-context';
 import { Suspense } from 'react';
 import { AppShell } from '@/components/layout/app-shell';
 import type { User } from '@/lib/types';
@@ -30,9 +31,11 @@ export default function RootLayout({
       <body>
         <Suspense>
           <AssignmentsProvider>
-            <AppShell>
-              {children}
-            </AppShell>
+            <GradesProvider>
+              <AppShell>
+                {children}
+              </AppShell>
+            </GradesProvider>
           </AssignmentsProvider>
         </Suspense>
         <Toaster />

@@ -43,13 +43,9 @@ export const mockAssignments: Assignment[] = [
   },
 ];
 
-export const mockCourses: Course[] = [
-  { id: '1', name: 'Physics 301', grade: 88 },
-  { id: '2', name: 'English Lit 202', grade: 92 },
-  { id: '3', name: 'Math 210', grade: 95 },
-  { id: '4', name: 'Biology 101', grade: 85 },
-  { id: '5', name: 'History 110', grade: 90 },
-];
+// This mock data is no longer used for grades.
+// Grades are now managed in grades-context.tsx
+export const mockCourses: Course[] = [];
 
 export const mockSchedule: ScheduleEvent[] = [
   {

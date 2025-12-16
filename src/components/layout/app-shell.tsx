@@ -247,7 +247,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
           </div>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-           {React.cloneElement(children, { user, setImportSyllabusOpen })}
+           {React.cloneElement(children, { user, setImportSyllabusOpen, isUserLoaded })}
         </main>
       </SidebarInset>
       <AddAssignmentDialog open={addAssignmentOpen} onOpenChange={setAddAssignmentOpen} />
