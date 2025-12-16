@@ -8,6 +8,9 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import type { User } from "@/lib/types";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 type DashboardPageProps = {
   user?: User | null;
@@ -17,6 +20,23 @@ type DashboardPageProps = {
 export function DashboardPage({ user, setImportSyllabusOpen }: DashboardPageProps) {
   
   const router = useRouter();
+  const [portalUrl, setPortalUrl] = useState("https://navigate.nu.edu/d2l/home");
+
+  useEffect(() => {
+    const savedUrl = localStorage.getItem("studentPortalUrl");
+    if (savedUrl) {
+      setPortalUrl(savedUrl);
+    }
+  }, []);
+
+  const handlePortalUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPortalUrl(e.target.value);
+  }
+
+  const handleSavePortalUrl = () => {
+    localStorage.setItem("studentPortalUrl", portalUrl);
+    window.open(portalUrl, "_blank");
+  }
 
   const handleAleksClick = () => {
     window.open("https://www.aleks.com/", "_blank");
@@ -24,10 +44,6 @@ export function DashboardPage({ user, setImportSyllabusOpen }: DashboardPageProp
   
   const handleLearningCenterClick = () => {
     window.open("https://www.nu.edu/students/academic-success-center/", "_blank");
-  };
-
-  const handlePortalClick = () => {
-    window.open("https://navigate.nu.edu/d2l/home", "_blank");
   };
 
   return (
@@ -47,11 +63,17 @@ export function DashboardPage({ user, setImportSyllabusOpen }: DashboardPageProp
               <CardTitle className="text-gradient">Student Portal</CardTitle>
               <CardDescription>Access your university's resources.</CardDescription>
             </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">
-                Go to your university's portal to find your syllabus, grades, and other resources.
-              </p>
-              <Button className="w-full" onClick={handlePortalClick}>Go to Portal</Button>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="portal-url">Portal URL</Label>
+                <Input 
+                  id="portal-url" 
+                  value={portalUrl}
+                  onChange={handlePortalUrlChange}
+                  placeholder="https://my.school.edu"
+                />
+              </div>
+              <Button className="w-full" onClick={handleSavePortalUrl}>Go to Portal</Button>
             </CardContent>
           </Card>
           <Card>
