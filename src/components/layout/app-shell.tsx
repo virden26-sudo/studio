@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -10,6 +11,7 @@ import {
   Settings,
   User as UserIcon,
   FileUp,
+  BrainCircuit,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -116,6 +118,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
     { href: "/assignments", icon: Book, label: "Assignments" },
     { href: "/grades", icon: Star, label: "Grades" },
     { href: "/calendar", icon: Calendar, label: "Calendar" },
+    { href: "/study", icon: BrainCircuit, label: "Study" },
   ];
 
   const pageTitles: { [key: string]: string } = {
@@ -123,6 +126,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
     '/assignments': 'Assignments',
     '/grades': 'Grades',
     '/calendar': 'Calendar',
+    '/study': 'Study Hub'
   };
   
   const pageTitle = pageTitles[pathname] || "";
