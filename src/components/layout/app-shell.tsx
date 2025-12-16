@@ -124,7 +124,6 @@ export function AppShell({ children }: { children: React.ReactElement }) {
   };
   
   const pageTitle = pageTitles[pathname] || "";
-  const showWelcomeHeader = pathname === '/';
 
   if (!isUserLoaded) {
     return (
