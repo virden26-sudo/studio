@@ -6,11 +6,15 @@ import { useAssignments } from "@/context/assignments-context";
 export function WelcomeHeader({ user }: { user?: User | null }) {
   const { assignments, loading } = useAssignments();
   
+  if (!user) {
+    return null;
+  }
+
   const upcomingCount = loading ? 0 : assignments.filter(
     (a) => !a.completed && a.dueDate > new Date()
   ).length;
 
-  const name = user ? user.name.split(" ")[0] : "there";
+  const name = user.name.split(" ")[0];
   
   return (
     <div>
