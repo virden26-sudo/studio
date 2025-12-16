@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -50,10 +51,10 @@ export function AssignmentsList() {
                     <div className="font-medium">{assignment.title}</div>
                     <div className="text-sm text-muted-foreground">{assignment.course}</div>
                 </TableCell>
-                <TableCell className="hidden md:table-cell">
+                <TableCell>
                     <p className={cn("text-sm font-medium", dueDateInfo.className)}>{dueDateInfo.text}</p>
                 </TableCell>
-                <TableCell className="hidden sm:table-cell text-right">
+                <TableCell className="text-right">
                     <Badge variant={getPriorityBadgeVariant(assignment.priority)} className="capitalize">{assignment.priority}</Badge>
                 </TableCell>
             </TableRow>
@@ -66,8 +67,8 @@ export function AssignmentsList() {
                 <TableRow>
                     <TableHead className="w-10"></TableHead>
                     <TableHead>Assignment</TableHead>
-                    <TableHead className="hidden md:table-cell">Due Date</TableHead>
-                    <TableHead className="hidden sm:table-cell text-right">Priority</TableHead>
+                    <TableHead>Due Date</TableHead>
+                    <TableHead className="text-right">Priority</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
