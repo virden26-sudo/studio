@@ -5,8 +5,6 @@ import { AssignmentsProvider } from '@/context/assignments-context';
 import { GradesProvider } from '@/context/grades-context';
 import { Suspense } from 'react';
 import { AppShell } from '@/components/layout/app-shell';
-import type { User } from '@/lib/types';
-import { DashboardPage } from '@/components/dashboard/dashboard-page';
 
 export const metadata: Metadata = {
   title: 'Agenda+',

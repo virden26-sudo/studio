@@ -105,6 +105,12 @@ export function AppShell({ children }: { children: React.ReactElement }) {
     window.open("https://navigate.nu.edu/d2l/home/23776", "_blank");
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("agendaUser");
+    setUser(null);
+    setNamePromptOpen(true);
+  }
+
   const MobileSidebarHeader = (
     <SheetHeader className="border-b p-4">
        <SheetTitle className="sr-only">Main Menu</SheetTitle>
@@ -219,20 +225,21 @@ export function AppShell({ children }: { children: React.ReactElement }) {
               <DropdownMenuContent className="w-56" side="top" align="start">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setNamePromptOpen(true)}>
-                  View Profile
+                <DropdownMenuItem onClick={() => { setNameInput(user?.name || ''); setNamePromptOpen(true);}}>
+                  Edit Profile
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handlePortalClick}>
                   University Portal
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout}>
                   Log out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
             <SidebarMenuItem>
-                <SidebarMenuButton className="h-auto justify-start" onClick={() => setNamePromptOpen(true)}>
+                <SidebarMenuButton className="h-auto justify-start" onClick={() => {setNameInput(user?.name || ''); setNamePromptOpen(true);}}>
                     <Avatar className="size-8 mr-2">
                       {user?.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.name || ''} data-ai-hint="person portrait" />}
                       <AvatarFallback>{user ? getInitials(user.name) : <UserIcon/>}</AvatarFallback>
@@ -240,8 +247,8 @@ export function AppShell({ children }: { children: React.ReactElement }) {
                      <div className="flex flex-col items-start group-data-[collapsible=icon]:hidden">
                         {user ? (
                             <>
-                                <span className="text-gradient">{user.name}</span>
-                                <span className="text-xs text-muted-foreground">View Profile</span>
+                                <span className="text-gradient font-semibold">{user.name}</span>
+                                <span className="text-xs text-muted-foreground">Edit Profile</span>
                             </>
                         ) : (
                             <span className="text-gradient">Set User</span>
