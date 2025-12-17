@@ -14,6 +14,7 @@ import {
   BrainCircuit,
   Video,
   Trash2,
+  Share2,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -67,9 +68,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ImportSyllabusDialog } from "../dashboard/import-syllabus-dialog";
+import { useToast } from "@/hooks/use-toast";
+import { useAssignments } from "@/context/assignments-context";
+import { useGrades } from "@/context/grades-context";
 
 export function AppShell({ children }: { children: React.ReactElement }) {
   const pathname = usePathname();
+  const { toast } = useToast();
+  const { assignments } = useAssignments();
+  const { courses } = useGrades();
   const [addAssignmentOpen, setAddAssignmentOpen] = React.useState(false);
   const [schedulerOpen, setSchedulerOpen] = React.useState(false);
   const [importSyllabusOpen, setImportSyllabusOpen] = React.useState(false);
@@ -132,6 +139,42 @@ export function AppShell({ children }: { children: React.ReactElement }) {
     localStorage.removeItem("zoomLink");
     window.location.reload();
   };
+
+  const formatShareText = (): string => {
+    let text = `Hey! Here's a snapshot of my current agenda:\n\n`;
+    
+    text += "--- Upcoming Assignments ---\n";
+    const upcoming = assignments.filter(a => !a.completed).sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
+    if (upcoming.length > 0) {
+      upcoming.forEach(a => {
+        text += `- ${a.title} (${a.course}) - Due: ${a.dueDate.toLocaleDateString()}\n`;
+      });
+    } else {
+      text += "No upcoming assignments. All caught up!\n";
+    }
+
+    text += "\n--- Current Grades ---\n";
+    if (courses.length > 0) {
+        courses.forEach(c => {
+            text += `- ${c.name}: ${c.grade}%\n`;
+        });
+    } else {
+        text += "No grades synced yet.\n";
+    }
+
+    return text;
+  }
+
+  const handleShare = async () => {
+    const shareText = formatShareText();
+    try {
+        await navigator.clipboard.writeText(shareText);
+        toast({ title: 'Copied to Clipboard!', description: 'Your agenda summary has been copied.' });
+    } catch (error) {
+        console.error('Error copying:', error);
+        toast({ variant: 'destructive', title: 'Could not copy summary.' });
+    }
+  }
 
   const MobileSidebarHeader = (
     <SheetHeader className="border-b p-4">
@@ -292,9 +335,17 @@ export function AppShell({ children }: { children: React.ReactElement }) {
           <h1 className="flex-1 text-lg font-semibold md:text-xl font-headline text-gradient">{pageTitle}</h1>
           <div className="flex-1" />
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon" className="md-hidden" onClick={() => setAddAssignmentOpen(true)}>
+            <Button variant="outline" size="sm" className="hidden md:flex" onClick={handleShare}>
+              <Share2 className="mr-2 size-4" />
+              Share
+            </Button>
+            <Button variant="outline" size="icon" className="md:hidden" onClick={() => setAddAssignmentOpen(true)}>
               <Plus className="size-4" />
               <span className="sr-only">Add Assignment</span>
+            </Button>
+            <Button variant="outline" size="icon" className="md:hidden" onClick={handleShare}>
+              <Share2 className="size-4" />
+              <span className="sr-only">Share</span>
             </Button>
           </div>
         </header>
@@ -348,5 +399,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
     </SidebarProvider>
   );
 }
+
+    
 
     

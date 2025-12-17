@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { suggestStudySchedule } from "@/ai/flows/intelligent-study-schedule-suggestions";
-import { Loader2, Bot, Sparkles, Download, Trash2 } from "lucide-react";
+import { Loader2, Bot, Sparkles, Download, Trash2, Share2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../ui/card";
 import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
@@ -87,6 +87,44 @@ export function IntelligentSchedulerDialog({ open, onOpenChange }: IntelligentSc
         description: "Your saved study plan has been removed.",
     });
   }
+  
+  const formatPlanAsText = (plan: Suggestion): string => {
+    let text = "Here's my study plan:\n\n";
+    plan.suggestedSchedule.forEach(item => {
+      text += `- ${item.assignment}: ${item.day} from ${item.startTime} to ${item.endTime}\n`;
+    });
+    text += `\nReasoning: ${plan.reasoning}`;
+    return text;
+  };
+
+  const handleSharePlan = async () => {
+    if (!suggestion) return;
+
+    const shareText = formatPlanAsText(suggestion);
+    const shareData = {
+      title: 'My Study Plan',
+      text: shareText,
+    };
+
+    if (navigator.share && navigator.canShare(shareData)) {
+      try {
+        await navigator.share(shareData);
+        toast({ title: 'Plan Shared!', description: 'Your study plan has been sent.' });
+      } catch (error) {
+        console.error('Error sharing:', error);
+        toast({ variant: 'destructive', title: 'Could not share plan.' });
+      }
+    } else {
+      // Fallback to copying to clipboard
+      try {
+        await navigator.clipboard.writeText(shareText);
+        toast({ title: 'Copied to Clipboard', description: 'Study plan copied. You can now paste it to share.' });
+      } catch (error) {
+        console.error('Error copying:', error);
+        toast({ variant: 'destructive', title: 'Could not copy plan.' });
+      }
+    }
+  };
 
   const handleSaveToCalendar = () => {
     if (!suggestion) return;
@@ -213,13 +251,18 @@ export function IntelligentSchedulerDialog({ open, onOpenChange }: IntelligentSc
                                 <p className="text-sm text-muted-foreground whitespace-pre-wrap">{suggestion.reasoning}</p>
                             </ScrollArea>
                         </CardContent>
-                        <DialogFooter className="p-4 border-t gap-2">
+                        <DialogFooter className="p-4 border-t flex-col sm:flex-row gap-2">
                              <Button variant="outline" onClick={handleClearPlan} className="w-full sm:w-auto">
                                 <Trash2 className="mr-2"/> Clear Plan
                             </Button>
-                            <Button onClick={handleSaveToCalendar} className="w-full sm:w-auto">
-                                <Download className="mr-2"/> Save to Calendar (.ics)
-                            </Button>
+                            <div className="flex w-full sm:w-auto gap-2">
+                                <Button onClick={handleSharePlan} variant="outline" className="w-full">
+                                    <Share2 className="mr-2"/> Share
+                                </Button>
+                                <Button onClick={handleSaveToCalendar} className="w-full">
+                                    <Download className="mr-2"/> Save to Calendar
+                                </Button>
+                            </div>
                         </DialogFooter>
                     </Card>
                 )}
