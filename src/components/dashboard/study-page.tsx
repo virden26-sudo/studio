@@ -87,7 +87,7 @@ export function StudyPage() {
                     Connect to ALEKS
                 </CardTitle>
                 <CardDescription>Access your math and chemistry assignments.</CardDescription>
-            </CardHeader>
+            </Header>
             <CardContent>
                 <p className="text-sm text-muted-foreground mb-4">Go to the ALEKS website to complete your interactive assignments.</p>
                 <Button className="w-full" onClick={handleAleksClick}>
