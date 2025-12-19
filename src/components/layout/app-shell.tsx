@@ -84,6 +84,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
   const [namePromptOpen, setNamePromptOpen] = React.useState(false);
   const [resetDialogOpen, setResetDialogOpen] = React.useState(false);
   const [nameInput, setNameInput] = React.useState('');
+  const [portalUrlInput, setPortalUrlInput] = React.useState("https://navigate.nu.edu/d2l/home");
   const [isUserLoaded, setIsUserLoaded] = React.useState(false);
 
   React.useEffect(() => {
@@ -94,6 +95,11 @@ export function AppShell({ children }: { children: React.ReactElement }) {
       } else {
         setNamePromptOpen(true);
       }
+      const storedPortalUrl = localStorage.getItem("studentPortalUrl");
+      if (storedPortalUrl) {
+        setPortalUrlInput(storedPortalUrl);
+      }
+
     } catch (e) {
       console.error("Failed to parse user from local storage", e);
       setNamePromptOpen(true);
@@ -102,7 +108,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
     }
   }, []);
 
-  const handleNameSave = () => {
+  const handleProfileSave = () => {
     if (nameInput.trim()) {
       const newUser: User = {
         name: nameInput.trim(),
@@ -110,9 +116,12 @@ export function AppShell({ children }: { children: React.ReactElement }) {
       };
       localStorage.setItem("agendaUser", JSON.stringify(newUser));
       setUser(newUser);
-      setNamePromptOpen(false);
       setNameInput('');
     }
+    if(portalUrlInput.trim()){
+      localStorage.setItem("studentPortalUrl", portalUrlInput);
+    }
+    setNamePromptOpen(false);
   };
 
   const getInitials = (name: string) => {
@@ -121,14 +130,15 @@ export function AppShell({ children }: { children: React.ReactElement }) {
   }
   
   const handlePortalClick = () => {
-    window.open("https://navigate.nu.edu/d2l/home/23776", "_blank");
+    const portalUrl = localStorage.getItem("studentPortalUrl") || "https://navigate.nu.edu/d2l/home";
+    window.open(portalUrl, "_blank");
   };
 
   const handleLogout = () => {
     localStorage.removeItem("agendaUser");
     setUser(null);
     setNamePromptOpen(true);
-  }
+  };
 
   const handleResetApp = () => {
     localStorage.removeItem("agendaUser");
@@ -366,18 +376,30 @@ export function AppShell({ children }: { children: React.ReactElement }) {
                 <UIDialogTitle>Welcome to Agenda+</UIDialogTitle>
                 <DialogDescription>Please enter your name to personalize your experience.</DialogDescription>
             </DialogHeader>
-            <div className="space-y-2 py-4">
-                <Label htmlFor="name">Name</Label>
-                <Input 
-                    id="name" 
-                    placeholder="e.g. Alex Doe"
-                    value={nameInput}
-                    onChange={(e) => setNameInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleNameSave()}
-                />
+            <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                    <Label htmlFor="name">Name</Label>
+                    <Input 
+                        id="name" 
+                        placeholder="e.g. Alex Doe"
+                        value={nameInput}
+                        onChange={(e) => setNameInput(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleProfileSave()}
+                    />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="portal-url">Student Portal URL</Label>
+                    <Input 
+                        id="portal-url" 
+                        placeholder="e.g. https://my.school.edu"
+                        value={portalUrlInput}
+                        onChange={(e) => setPortalUrlInput(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && handleProfileSave()}
+                    />
+                </div>
             </div>
             <DialogFooter>
-                <Button onClick={handleNameSave} disabled={!nameInput.trim()}>Save</Button>
+                <Button onClick={handleProfileSave} disabled={!nameInput.trim()}>Save</Button>
             </DialogFooter>
         </DialogContent>
       </Dialog>
