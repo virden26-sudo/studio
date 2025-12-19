@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { User } from "@/lib/types";
@@ -14,7 +15,7 @@ export function WelcomeHeader({ user }: { user?: User | null }) {
     (a) => !a.completed && a.dueDate > new Date()
   ).length;
 
-  const name = user.name.split(" ")[0];
+  const name = user.name ? user.name.split(" ")[0] : "";
   
   return (
     <div>
