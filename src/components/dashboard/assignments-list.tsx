@@ -38,15 +38,14 @@ export function AssignmentsList() {
         return (
              <AccordionItem value={assignment.id}>
                 <div className="flex items-center gap-4 py-4">
-                    <Checkbox
-                        id={`checkbox-${assignment.id}`}
-                        checked={assignment.completed}
-                        onCheckedChange={(e) => {
-                            e.stopPropagation();
-                            toggleAssignment(assignment.id);
-                        }}
-                        aria-label="Toggle assignment completion"
-                    />
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <Checkbox
+                            id={`checkbox-${assignment.id}`}
+                            checked={assignment.completed}
+                            onCheckedChange={() => toggleAssignment(assignment.id)}
+                            aria-label="Toggle assignment completion"
+                        />
+                    </div>
                     <AccordionTrigger className="w-full p-0">
                         <div className="flex-1 text-left">
                             <div className={cn("font-medium", assignment.completed && "line-through text-muted-foreground")}>{assignment.title}</div>
