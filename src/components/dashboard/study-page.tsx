@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
@@ -87,7 +88,7 @@ export function StudyPage() {
                     Connect to ALEKS
                 </CardTitle>
                 <CardDescription>Access your math and chemistry assignments.</CardDescription>
-            </Header>
+            </CardHeader>
             <CardContent>
                 <p className="text-sm text-muted-foreground mb-4">Go to the ALEKS website to complete your interactive assignments.</p>
                 <Button className="w-full" onClick={handleAleksClick}>
