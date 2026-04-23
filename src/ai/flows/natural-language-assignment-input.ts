@@ -16,6 +16,7 @@ const ParseAssignmentInputSchema = z.object({
   assignmentText: z
     .string()
     .describe('A natural language description of an assignment.'),
+  currentDate: z.string().optional().describe('The current date.'),
 });
 export type ParseAssignmentInput = z.infer<typeof ParseAssignmentInputSchema>;
 

@@ -3,6 +3,7 @@ import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 import { AssignmentsProvider } from '@/context/assignments-context';
 import { GradesProvider } from '@/context/grades-context';
+import { PortalProvider } from '@/context/portal-context';
 import { Suspense } from 'react';
 import { AppShell } from '@/components/layout/app-shell';
 
@@ -30,9 +31,11 @@ export default function RootLayout({
         <Suspense>
           <AssignmentsProvider>
             <GradesProvider>
-              <AppShell>
-                {children}
-              </AppShell>
+              <PortalProvider>
+                <AppShell>
+                  {children}
+                </AppShell>
+              </PortalProvider>
             </GradesProvider>
           </AssignmentsProvider>
         </Suspense>

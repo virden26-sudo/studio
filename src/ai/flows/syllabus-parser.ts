@@ -9,7 +9,6 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {googleAI} from '@genkit-ai/google-genai';
 import {z} from 'genkit';
 import { AssignmentSchema } from '@/ai/schemas/assignment';
 
@@ -19,6 +18,7 @@ const ParseSyllabusInputSchema = z.object({
     .describe(
       "A syllabus file, as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
+  currentDate: z.string().optional().describe('The current date.'),
 });
 export type ParseSyllabusInput = z.infer<typeof ParseSyllabusInputSchema>;
 
@@ -35,7 +35,7 @@ const parseSyllabusPrompt = ai.definePrompt({
   name: 'parseSyllabusPrompt',
   input: {schema: ParseSyllabusInputSchema},
   output: {schema: ParseSyllabusOutputSchema},
-  model: googleAI('gemini-1.5-flash'),
+  model: 'ollama/budd-ie:latest',
   prompt: `You are an expert AI assistant that extracts a structured list of assignments, exams, and discussions from a course syllabus.
 
   The output should be a JSON object containing an 'assignments' array. Each object in the array should have the following keys:

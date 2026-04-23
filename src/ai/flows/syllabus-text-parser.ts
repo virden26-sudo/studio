@@ -18,6 +18,7 @@ const ParseSyllabusTextInputSchema = z.object({
     .describe(
       "The raw text content of a course syllabus."
     ),
+  currentDate: z.string().optional().describe('The current date.'),
 });
 export type ParseSyllabusTextInput = z.infer<typeof ParseSyllabusTextInputSchema>;
 

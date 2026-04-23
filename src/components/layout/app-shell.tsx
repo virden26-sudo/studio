@@ -68,11 +68,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ImportSyllabusDialog } from "../dashboard/import-syllabus-dialog";
+import { BuddieSyncDialog } from "../dashboard/budd-ie-sync-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useAssignments } from "@/context/assignments-context";
 import { useGrades } from "@/context/grades-context";
 
-export function AppShell({ children }: { children: React.ReactElement }) {
+export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { toast } = useToast();
   const { assignments } = useAssignments();
@@ -80,6 +81,7 @@ export function AppShell({ children }: { children: React.ReactElement }) {
   const [addAssignmentOpen, setAddAssignmentOpen] = React.useState(false);
   const [schedulerOpen, setSchedulerOpen] = React.useState(false);
   const [importSyllabusOpen, setImportSyllabusOpen] = React.useState(false);
+  const [syncOpen, setSyncOpen] = React.useState(false);
   const [user, setUser] = React.useState<User | null>(null);
   const [namePromptOpen, setNamePromptOpen] = React.useState(false);
   const [resetDialogOpen, setResetDialogOpen] = React.useState(false);
@@ -200,6 +202,8 @@ export function AppShell({ children }: { children: React.ReactElement }) {
     { href: "/assignments", icon: Book, label: "Assignments" },
     { href: "/grades", icon: Star, label: "Grades" },
     { href: "/calendar", icon: Calendar, label: "Calendar" },
+    { href: "/discussions", icon: UserIcon, label: "Discussions" },
+    { href: "/announcements", icon: FileUp, label: "Announcements" },
     { href: "/study", icon: BrainCircuit, label: "Study" },
   ];
 
@@ -208,6 +212,8 @@ export function AppShell({ children }: { children: React.ReactElement }) {
     '/assignments': 'Assignments',
     '/grades': 'Grades',
     '/calendar': 'Calendar',
+    '/discussions': 'Discussions',
+    '/announcements': 'Announcements',
     '/study': 'Study Hub'
   };
   
@@ -242,6 +248,12 @@ export function AppShell({ children }: { children: React.ReactElement }) {
                   <Button variant="secondary" className="w-full justify-start h-10" onClick={() => setImportSyllabusOpen(true)}>
                       <FileUp className="mr-2 size-4" />
                       <span className="group-data-[collapsible=icon]:hidden">Import Syllabus</span>
+                  </Button>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                  <Button variant="outline" className="w-full justify-start h-10 border-primary/50 text-primary hover:bg-primary/5" onClick={() => setSyncOpen(true)}>
+                      <Sparkles className="mr-2 size-4" />
+                      <span className="group-data-[collapsible=icon]:hidden">Sync with Budd-ie</span>
                   </Button>
               </SidebarMenuItem>
           </SidebarMenu>
@@ -360,12 +372,16 @@ export function AppShell({ children }: { children: React.ReactElement }) {
           </div>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-           {React.cloneElement(children, { user, setImportSyllabusOpen, isUserLoaded })}
+           {React.isValidElement(children) 
+             ? React.cloneElement(children as React.ReactElement<any>, { user, setImportSyllabusOpen, isUserLoaded })
+             : children
+           }
         </main>
       </SidebarInset>
       <AddAssignmentDialog open={addAssignmentOpen} onOpenChange={setAddAssignmentOpen} />
       <IntelligentSchedulerDialog open={schedulerOpen} onOpenChange={setSchedulerOpen} />
       <ImportSyllabusDialog open={importSyllabusOpen} onOpenChange={setImportSyllabusOpen} />
+      <BuddieSyncDialog open={syncOpen} onOpenChange={setSyncOpen} />
       <Dialog open={namePromptOpen} onOpenChange={(isOpen) => {
         if (user) {
           setNamePromptOpen(isOpen);
